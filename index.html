@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EcoSort — Smart Waste Segregation & AI Recycling Experience</title>
-  <meta name="description" content="EcoSort uses smart computer vision to instantly identify waste items and guide proper disposal into recyclable, organic, hazardous, and general bins. Sort Smart. Recycle Right.">
+  <meta name="description"
+    content="EcoSort uses smart computer vision to instantly identify waste items and guide proper disposal into recyclable, organic, hazardous, and general bins. Sort Smart. Recycle Right.">
 
   <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
   <!-- ================= TOP ANNOUNCEMENT BANNER ================= -->
@@ -37,14 +42,14 @@
         <div class="logo-icon-wrapper">
           <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect width="32" height="32" rx="10" fill="url(#logo-grad)" />
-            <path d="M16 6L21.5 12H18.5V17H13.5V12H10.5L16 6Z" fill="#FFFFFF"/>
-            <path d="M22.5 14L25.5 19.5L20.5 22.5L21.8 19.8L17.5 17.3L19.3 14.2L23.6 16.7L22.5 14Z" fill="#A7F3D0"/>
-            <path d="M9.5 14L12.5 16.7L14.3 13.6L10.1 11.1L11.3 8.5L6.4 11.5L9.5 14Z" fill="#34D399"/>
-            <path d="M12 21H20C20 23.2 18.2 25 16 25C13.8 25 12 23.2 12 21Z" fill="#ECFDF5"/>
+            <path d="M16 6L21.5 12H18.5V17H13.5V12H10.5L16 6Z" fill="#FFFFFF" />
+            <path d="M22.5 14L25.5 19.5L20.5 22.5L21.8 19.8L17.5 17.3L19.3 14.2L23.6 16.7L22.5 14Z" fill="#A7F3D0" />
+            <path d="M9.5 14L12.5 16.7L14.3 13.6L10.1 11.1L11.3 8.5L6.4 11.5L9.5 14Z" fill="#34D399" />
+            <path d="M12 21H20C20 23.2 18.2 25 16 25C13.8 25 12 23.2 12 21Z" fill="#ECFDF5" />
             <defs>
               <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#064E3B"/>
-                <stop offset="1" stop-color="#059669"/>
+                <stop stop-color="#064E3B" />
+                <stop offset="1" stop-color="#059669" />
               </linearGradient>
             </defs>
           </svg>
@@ -58,7 +63,7 @@
       <!-- Desktop Nav -->
       <nav class="desktop-nav" aria-label="Primary Navigation">
         <a href="#hero" class="nav-link active">Home</a>
-        <a href="#scanner" class="nav-link">Scan Waste</a>
+        <a href="#scanner" class="nav-link">Scan waste</a>
         <a href="#categories" class="nav-link">Categories</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
         <a href="#impact" class="nav-link">Impact</a>
@@ -107,7 +112,7 @@
     <section class="hero-section" id="hero">
       <div class="hero-glow-blob hero-glow-1"></div>
       <div class="hero-glow-blob hero-glow-2"></div>
-      
+
       <div class="container hero-container">
         <!-- Hero Left Column -->
         <div class="hero-content">
@@ -123,7 +128,8 @@
           </h1>
 
           <p class="hero-description">
-            Unsure which bin it belongs to? EcoSort scans your discarded items in seconds using intelligent computer vision, providing foolproof disposal instructions and real-time environmental impact data.
+            Unsure which bin it belongs to? EcoSort scans your discarded items in seconds using intelligent computer
+            vision, providing foolproof disposal instructions and real-time environmental impact data.
           </p>
 
           <div class="hero-cta-group">
@@ -176,10 +182,9 @@
 
             <!-- Viewport Screen -->
             <div class="visual-scanner-screen">
-              <img src="https://images.unsplash.com/photo-1574974671999-24b7dfba0d53?auto=format&fit=crop&w=700&q=80" 
-                   alt="Plastic bottle scanned by AI" 
-                   class="visual-screen-img" />
-              
+              <img src="https://images.unsplash.com/photo-1574974671999-24b7dfba0d53?auto=format&fit=crop&w=700&q=80"
+                alt="Plastic bottle scanned by AI" class="visual-screen-img" />
+
               <!-- Scanning Laser Animation -->
               <div class="visual-laser-line"></div>
 
@@ -224,7 +229,8 @@
             <div class="visual-card-footer">
               <div class="scanner-mini-bar">
                 <span class="pulse-indicator"></span>
-                <span class="scanner-status-text">Optical Recognition: <strong class="text-emerald">Target Verified</strong></span>
+                <span class="scanner-status-text">Optical Recognition: <strong class="text-emerald">Target
+                    Verified</strong></span>
               </div>
               <a href="#scanner" class="mini-cta-link">Try Live &rarr;</a>
             </div>
@@ -289,7 +295,8 @@
             </div>
 
             <!-- Drag & Drop / Preview Area -->
-            <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Drop waste photo or click to upload">
+            <div class="drop-zone" id="dropZone" tabindex="0" role="button"
+              aria-label="Drop waste photo or click to upload">
               <!-- Hidden File Input -->
               <input type="file" id="fileInput" accept="image/*" class="file-input-hidden">
 
@@ -320,7 +327,7 @@
               <!-- Active Preview / Scan Container (Hidden by default) -->
               <div class="drop-zone-preview" id="dropPreview">
                 <img id="previewImg" src="" alt="Waste sample preview" class="preview-img">
-                
+
                 <!-- Animated Laser Scanner Overlay -->
                 <div class="scanner-laser-bar" id="scannerLaser"></div>
                 <div class="scanner-grid-overlay"></div>
@@ -395,7 +402,8 @@
               </div>
               <h4 class="idle-title">Ready to identify your waste</h4>
               <p class="idle-text">
-                Select one of the sample items above or upload your own photo. EcoSort will classify the material, recommend the right bin, and provide actionable prep instructions.
+                Select one of the sample items above or upload your own photo. EcoSort will classify the material,
+                recommend the right bin, and provide actionable prep instructions.
               </p>
               <div class="idle-features">
                 <div class="idle-feat-item">
@@ -703,7 +711,8 @@
             </div>
             <h3 class="step-title">Dispose</h3>
             <p class="step-description">
-              Receive the precise color-coded bin recommendation, step-by-step cleaning instructions, and saved carbon metrics.
+              Receive the precise color-coded bin recommendation, step-by-step cleaning instructions, and saved carbon
+              metrics.
             </p>
             <div class="step-feature-tag">Zero Contamination</div>
           </div>
@@ -723,7 +732,8 @@
             </div>
             <h2 class="impact-main-title">Small actions.<br><span class="text-glow">Bigger impact.</span></h2>
             <p class="impact-description">
-              Proper segregation at the moment of disposal is the single most effective barrier against oceanic microplastics and methane-generating open landfills.
+              Proper segregation at the moment of disposal is the single most effective barrier against oceanic
+              microplastics and methane-generating open landfills.
             </p>
           </div>
 
@@ -767,8 +777,10 @@
           <div class="kpi-card">
             <div class="kpi-ring-wrapper">
               <svg class="progress-ring" width="100" height="100">
-                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
-                <circle class="ring-progress" stroke="#10b981" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="35" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40"
+                  cx="50" cy="50" />
+                <circle class="ring-progress" stroke="#10b981" stroke-width="8" stroke-dasharray="251.2"
+                  stroke-dashoffset="35" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" />
               </svg>
               <span class="ring-text">86%</span>
             </div>
@@ -783,8 +795,10 @@
           <div class="kpi-card">
             <div class="kpi-ring-wrapper">
               <svg class="progress-ring" width="100" height="100">
-                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
-                <circle class="ring-progress" stroke="#34d399" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="60" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40"
+                  cx="50" cy="50" />
+                <circle class="ring-progress" stroke="#34d399" stroke-width="8" stroke-dasharray="251.2"
+                  stroke-dashoffset="60" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" />
               </svg>
               <span class="ring-text">76%</span>
             </div>
@@ -799,8 +813,10 @@
           <div class="kpi-card">
             <div class="kpi-ring-wrapper">
               <svg class="progress-ring" width="100" height="100">
-                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
-                <circle class="ring-progress" stroke="#06b6d4" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="20" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40"
+                  cx="50" cy="50" />
+                <circle class="ring-progress" stroke="#06b6d4" stroke-width="8" stroke-dasharray="251.2"
+                  stroke-dashoffset="20" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" />
               </svg>
               <span class="ring-text">92%</span>
             </div>
@@ -824,7 +840,8 @@
           </div>
           <h2 class="section-title">Everyday Waste Disposal Guide</h2>
           <p class="section-subtitle">
-            Browse commonly discarded items to find municipal disposal guidelines, preparation tips, and decomposition timeframes.
+            Browse commonly discarded items to find municipal disposal guidelines, preparation tips, and decomposition
+            timeframes.
           </p>
         </div>
 
@@ -833,7 +850,9 @@
           <!-- Search input -->
           <div class="guide-search-box">
             <i data-lucide="search" class="search-icon"></i>
-            <input type="text" id="guideSearchInput" placeholder="Search items e.g., plastic bottle, battery, paper, pizza box..." aria-label="Search waste items">
+            <input type="text" id="guideSearchInput"
+              placeholder="Search items e.g., plastic bottle, battery, paper, pizza box..."
+              aria-label="Search waste items">
             <button type="button" class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">
               <i data-lucide="x"></i>
             </button>
@@ -841,7 +860,8 @@
 
           <!-- Category Filter Pills -->
           <div class="guide-filter-pills" id="guideFilterPills">
-            <button class="filter-pill active" data-filter="all">All Items (<span id="totalItemsCount">8</span>)</button>
+            <button class="filter-pill active" data-filter="all">All Items (<span
+                id="totalItemsCount">8</span>)</button>
             <button class="filter-pill" data-filter="recyclable">Recyclable</button>
             <button class="filter-pill" data-filter="organic">Organic</button>
             <button class="filter-pill" data-filter="hazardous">Hazardous</button>
@@ -890,14 +910,15 @@
             <div class="logo-icon-wrapper">
               <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="32" height="32" rx="10" fill="url(#footer-logo-grad)" />
-                <path d="M16 6L21.5 12H18.5V17H13.5V12H10.5L16 6Z" fill="#FFFFFF"/>
-                <path d="M22.5 14L25.5 19.5L20.5 22.5L21.8 19.8L17.5 17.3L19.3 14.2L23.6 16.7L22.5 14Z" fill="#A7F3D0"/>
-                <path d="M9.5 14L12.5 16.7L14.3 13.6L10.1 11.1L11.3 8.5L6.4 11.5L9.5 14Z" fill="#34D399"/>
-                <path d="M12 21H20C20 23.2 18.2 25 16 25C13.8 25 12 23.2 12 21Z" fill="#ECFDF5"/>
+                <path d="M16 6L21.5 12H18.5V17H13.5V12H10.5L16 6Z" fill="#FFFFFF" />
+                <path d="M22.5 14L25.5 19.5L20.5 22.5L21.8 19.8L17.5 17.3L19.3 14.2L23.6 16.7L22.5 14Z"
+                  fill="#A7F3D0" />
+                <path d="M9.5 14L12.5 16.7L14.3 13.6L10.1 11.1L11.3 8.5L6.4 11.5L9.5 14Z" fill="#34D399" />
+                <path d="M12 21H20C20 23.2 18.2 25 16 25C13.8 25 12 23.2 12 21Z" fill="#ECFDF5" />
                 <defs>
                   <linearGradient id="footer-logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                    <stop stop-color="#064E3B"/>
-                    <stop offset="1" stop-color="#059669"/>
+                    <stop stop-color="#064E3B" />
+                    <stop offset="1" stop-color="#059669" />
                   </linearGradient>
                 </defs>
               </svg>
@@ -944,7 +965,8 @@
         <div class="footer-nav-col">
           <h4 class="footer-nav-title">Project Vision</h4>
           <p class="footer-vision-text">
-            Designed as a zero-friction frontend prototype addressing municipal contamination penalties and citizen disposal confusion.
+            Designed as a zero-friction frontend prototype addressing municipal contamination penalties and citizen
+            disposal confusion.
           </p>
           <div class="tech-stack-badges">
             <span class="tech-badge">HTML5 Semantic</span>
@@ -974,4 +996,5 @@
   <!-- Scripts -->
   <script src="app.js"></script>
 </body>
+
 </html>
