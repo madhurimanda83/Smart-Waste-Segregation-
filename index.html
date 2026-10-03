@@ -278,7 +278,7 @@
                 <i data-lucide="camera" class="pane-icon"></i>
                 <span>Waste Image Input</span>
               </h3>
-              <span class="pane-badge">AI Ready</span>
+              <span class="pane-badge" id="apiStatusBadge">Gemini 2.5 Flash Ready</span>
             </div>
 
             <!-- Drag & Drop / Preview Area -->
@@ -425,7 +425,7 @@
                 <div class="progress-bar-fill" id="scanProgressBar"></div>
               </div>
               <div class="progress-stats">
-                <span>Model: EcoVision-v2.4-lite</span>
+                <span id="scanModelName">Model: Google Gemini 2.5 Flash</span>
                 <span id="scanProgressPercent">0%</span>
               </div>
             </div>
@@ -438,9 +438,15 @@
                   <i data-lucide="recycle" id="resCategoryIcon"></i>
                   <span id="resCategoryName">Recyclable</span>
                 </div>
-                <div class="confidence-pill" id="resConfidence">
-                  <i data-lucide="shield-check"></i>
-                  <span>96.8% Confidence</span>
+                <div class="result-meta-badges">
+                  <span class="model-badge-chip" id="resModelChip" title="AI Model">
+                    <i data-lucide="sparkles"></i>
+                    <span id="resModelName">Gemini 2.5 Flash</span>
+                  </span>
+                  <div class="confidence-pill" id="resConfidence">
+                    <i data-lucide="shield-check"></i>
+                    <span>96.8% Confidence</span>
+                  </div>
                 </div>
               </div>
 

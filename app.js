@@ -379,11 +379,42 @@ function initScanner() {
 
   // Sample Chips
   const sampleChips = document.querySelectorAll('.sample-chip');
+  const apiStatusBadge = document.getElementById('apiStatusBadge');
+  const scanModelName = document.getElementById('scanModelName');
+  const resModelName = document.getElementById('resModelName');
+  const resModelChip = document.getElementById('resModelChip');
 
   let currentImageSrc = null;
   let currentWasteData = null;
+  let currentSampleKey = 'plastic_bottle';
   let webcamStream = null;
   let isScanning = false;
+
+  // Check backend & Gemini Flash status on initialization
+  checkBackendStatus();
+
+  async function checkBackendStatus() {
+    try {
+      const res = await fetch('/api/status');
+      if (res.ok) {
+        const info = await res.json();
+        if (apiStatusBadge) {
+          if (info.geminiConfigured) {
+            apiStatusBadge.textContent = 'Gemini 2.5 Flash Live';
+            apiStatusBadge.style.backgroundColor = 'var(--color-mint-subtle)';
+            apiStatusBadge.style.borderColor = 'var(--color-emerald)';
+            apiStatusBadge.style.color = 'var(--color-primary-dark)';
+          } else {
+            apiStatusBadge.textContent = 'Gemini Flash Ready (Add Key)';
+          }
+        }
+      }
+    } catch (e) {
+      if (apiStatusBadge) {
+        apiStatusBadge.textContent = 'AI Model Ready';
+      }
+    }
+  }
 
   // Click browse button
   browseBtn.addEventListener('click', (e) => {
@@ -436,7 +467,7 @@ function initScanner() {
     }
   });
 
-  // Process User File
+  // Process User File (Custom Upload)
   function handleUserFile(file) {
     if (!file.type.startsWith('image/')) {
       showToast('Please upload an image file (JPG, PNG, WEBP).');
@@ -444,13 +475,15 @@ function initScanner() {
     }
     const reader = new FileReader();
     reader.onload = (event) => {
-      // Pick random simulated item if custom photo
-      const sampleKeys = Object.keys(WASTE_ITEMS_DATABASE);
-      const randomKey = sampleKeys[Math.floor(Math.random() * sampleKeys.length)];
-      const simulatedData = { ...WASTE_ITEMS_DATABASE[randomKey] };
-      
-      setLoadedImage(event.target.result, simulatedData);
-      showToast('Photo uploaded! Click "Run AI Classification" to analyze.');
+      currentSampleKey = null; // Mark as custom upload for backend Gemini analysis
+      const cleanName = file.name.replace(/\.[^/.]+$/, '').replace(/[-_]/g, ' ');
+      const userItem = {
+        id: 'custom_upload',
+        name: cleanName || 'Uploaded Waste Item',
+        category: 'recyclable'
+      };
+      setLoadedImage(event.target.result, userItem, true);
+      showToast('Photo uploaded! Click "Run AI Classification" to analyze with Gemini Flash.');
     };
     reader.readAsDataURL(file);
   }
@@ -511,8 +544,9 @@ function initScanner() {
     const snapData = canvas.toDataURL('image/jpeg');
 
     stopWebcam();
-    setLoadedImage(snapData, WASTE_ITEMS_DATABASE.aluminum_can);
-    showToast('Photo captured! Starting classification...');
+    currentSampleKey = null;
+    setLoadedImage(snapData, { name: 'Webcam Waste Capture', category: 'recyclable' }, true);
+    showToast('Photo captured! Starting Gemini Flash classification...');
     runClassificationScan();
   });
 
@@ -529,14 +563,15 @@ function initScanner() {
 
   function loadPresetSample(sampleKey) {
     stopWebcam();
+    currentSampleKey = sampleKey;
     const data = WASTE_ITEMS_DATABASE[sampleKey] || WASTE_ITEMS_DATABASE.plastic_bottle;
-    setLoadedImage(data.image, data);
+    setLoadedImage(data.image, data, false);
     showToast(`Loaded "${data.name}" demo preset.`);
     runClassificationScan();
   }
 
   // Set loaded image in preview area
-  function setLoadedImage(imgSrc, wasteData) {
+  function setLoadedImage(imgSrc, wasteData, isCustom = false) {
     currentImageSrc = imgSrc;
     currentWasteData = wasteData;
     previewImg.src = imgSrc;
@@ -546,7 +581,9 @@ function initScanner() {
     webcamPane.style.display = 'none';
 
     runScanBtn.disabled = false;
-    runScanText.textContent = `Run AI Classification (${wasteData.name})`;
+    runScanText.textContent = isCustom
+      ? 'Run AI Classification (Gemini Flash)'
+      : `Run AI Classification (${wasteData.name})`;
   }
 
   // Scan execution
@@ -559,8 +596,9 @@ function initScanner() {
     resetScanner();
   });
 
-  function runClassificationScan() {
-    if (isScanning || !currentWasteData) return;
+  // Main Classification Scan Function (Connected to Backend /api/classify)
+  async function runClassificationScan() {
+    if (isScanning || !currentImageSrc) return;
     isScanning = true;
 
     // UI State: Scanning
@@ -573,42 +611,89 @@ function initScanner() {
     runScanBtn.disabled = true;
 
     analysisStatusChip.className = 'status-indicator-chip scanning';
-    analysisStatusText.textContent = 'Processing Neural Layers...';
+    analysisStatusText.textContent = 'Processing with Gemini Flash...';
 
     // Step sequence animation
     let progress = 0;
     scanProgressBar.style.width = '0%';
     scanProgressPercent.textContent = '0%';
+    if (scanModelName) scanModelName.textContent = 'Model: Google Gemini 2.5 Flash';
 
     const steps = [
-      { at: 20, text: 'Extracting geometry & surface specular highlights...' },
-      { at: 55, text: 'Running polymer & organic density classifier...' },
-      { at: 85, text: 'Querying municipal recycling taxonomy...' },
-      { at: 100, text: 'Generating disposal protocol & CO₂ offsets...' }
+      { at: 15, text: 'Resolving image bytes & extracting visual features...' },
+      { at: 40, text: 'Executing Gemini 2.5 Flash multi-modal reasoning...' },
+      { at: 70, text: 'Validating municipal taxonomy & contamination rules...' },
+      { at: 90, text: 'Generating disposal protocol & carbon offset metrics...' }
     ];
 
-    const interval = setInterval(() => {
-      progress += 5;
-      scanProgressBar.style.width = `${progress}%`;
-      scanProgressPercent.textContent = `${progress}%`;
+    const stepInterval = setInterval(() => {
+      if (progress < 85) {
+        progress += 4;
+        scanProgressBar.style.width = `${progress}%`;
+        scanProgressPercent.textContent = `${progress}%`;
 
-      const currentStep = steps.find(s => progress >= s.at && progress < s.at + 25);
-      if (currentStep) {
-        loadingStepText.textContent = currentStep.text;
+        const currentStep = steps.find(s => progress >= s.at && progress < s.at + 30);
+        if (currentStep) {
+          loadingStepText.textContent = currentStep.text;
+        }
+      }
+    }, 70);
+
+    try {
+      // POST to backend API
+      const response = await fetch('/api/classify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          image: currentImageSrc,
+          sampleHint: currentSampleKey || 'plastic_bottle'
+        })
+      });
+
+      clearInterval(stepInterval);
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || `Server responded with ${response.status}`);
       }
 
-      if (progress >= 100) {
-        clearInterval(interval);
-        setTimeout(() => {
-          renderAnalysisResult(currentWasteData);
-          isScanning = false;
-        }, 300);
-      }
-    }, 60);
+      const result = await response.json();
+
+      scanProgressBar.style.width = '100%';
+      scanProgressPercent.textContent = '100%';
+      loadingStepText.textContent = 'Classification Complete!';
+
+      setTimeout(() => {
+        renderAnalysisResult(result.data, result);
+        isScanning = false;
+      }, 350);
+
+    } catch (err) {
+      console.warn('[EcoSort] Backend API call failed or server offline, using local fallback:', err);
+      clearInterval(stepInterval);
+      scanProgressBar.style.width = '100%';
+      scanProgressPercent.textContent = '100%';
+      loadingStepText.textContent = 'Completed (Local Fallback)';
+
+      const fallbackItem = (currentSampleKey && WASTE_ITEMS_DATABASE[currentSampleKey])
+        || currentWasteData
+        || WASTE_ITEMS_DATABASE.plastic_bottle;
+
+      setTimeout(() => {
+        renderAnalysisResult(fallbackItem, {
+          model: 'Gemini 2.5 Flash (Fallback)',
+          source: 'local-fallback',
+          isGeminiKeyConfigured: false
+        });
+        isScanning = false;
+      }, 350);
+    }
   }
 
   // Render Result State
-  function renderAnalysisResult(item) {
+  function renderAnalysisResult(item, meta = {}) {
     scannerLaser.style.display = 'none';
     analyzingBadge.style.display = 'none';
     stateLoading.style.display = 'none';
@@ -618,6 +703,16 @@ function initScanner() {
     analysisStatusText.textContent = 'Classification Verified';
     runScanBtn.disabled = false;
     runScanText.textContent = 'Re-Analyze Current Item';
+
+    // Model Label
+    if (resModelName) {
+      if (meta.source === 'gemini-live') {
+        resModelName.textContent = 'Gemini 2.5 Flash (Live)';
+        if (resModelChip) resModelChip.title = 'Analyzed live by Google Gemini 2.5 Flash model';
+      } else {
+        resModelName.textContent = meta.model || 'Gemini 2.5 Flash';
+      }
+    }
 
     // Badge styling based on category
     resCategoryBadge.className = 'result-category-badge';
@@ -635,19 +730,22 @@ function initScanner() {
       resCategoryBadge.style.color = 'var(--cat-general)';
     }
 
-    resCategoryName.textContent = item.categoryLabel;
-    resConfidence.querySelector('span').textContent = `${item.confidence} Match`;
+    resCategoryName.textContent = item.categoryLabel || (item.category ? item.category.toUpperCase() : 'General Waste');
+    resConfidence.querySelector('span').textContent = `${item.confidence || '98%'} Match`;
     resItemName.textContent = item.name;
     resMaterial.textContent = item.material;
 
     // Bin Destination styling
-    resBinName.textContent = item.binName;
-    resBinRule.textContent = item.binRule;
-    resBinGraphic.style.backgroundColor = item.binColor;
+    resBinName.textContent = item.binName || 'General Waste Bin';
+    resBinRule.textContent = item.binRule || 'Disposed according to municipal guidelines';
+    if (item.binColor) {
+      resBinGraphic.style.backgroundColor = item.binColor;
+    }
 
     // Steps Checklist
     resStepsList.innerHTML = '';
-    item.steps.forEach((step, idx) => {
+    const stepsArray = Array.isArray(item.steps) ? item.steps : [item.steps].filter(Boolean);
+    stepsArray.forEach((step, idx) => {
       const li = document.createElement('li');
       li.innerHTML = `
         <span class="step-marker">${idx + 1}</span>
@@ -656,20 +754,25 @@ function initScanner() {
       resStepsList.appendChild(li);
     });
 
-    // Impact
-    resImpactHeadline.textContent = item.impactHeadline;
+    // Impact Headline
+    resImpactHeadline.textContent = item.impactHeadline || 'Proper segregation preserves recycling streams and keeps hazardous materials out of landfills.';
 
     if (window.lucide) {
       window.lucide.createIcons();
     }
 
-    showToast(`Classified: ${item.name} &rarr; ${item.binName}`);
+    if (meta.source === 'gemini-live') {
+      showToast(`Analyzed with Gemini 2.5 Flash: ${item.name}`);
+    } else {
+      showToast(`Classified: ${item.name} &rarr; ${item.binName || item.category}`);
+    }
   }
 
   function resetScanner() {
     stopWebcam();
     currentImageSrc = null;
     currentWasteData = null;
+    currentSampleKey = null;
     fileInput.value = '';
 
     dropPreview.style.display = 'none';

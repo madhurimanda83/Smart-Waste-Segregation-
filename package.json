@@ -1,0 +1,25 @@
+{
+  "name": "ecosort-smart-waste-segregation",
+  "version": "1.0.0",
+  "description": "Smart Waste Segregation and Recycling Experience powered by Gemini Flash",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "keywords": [
+    "waste-segregation",
+    "recycling",
+    "gemini-flash",
+    "ai",
+    "computer-vision"
+  ],
+  "author": "",
+  "license": "ISC"
+}
