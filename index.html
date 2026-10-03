@@ -23,17 +23,6 @@
 
 <body>
 
-  <!-- ================= TOP ANNOUNCEMENT BANNER ================= -->
-  <div class="top-announcement" id="topBanner">
-    <div class="container announcement-content">
-      <span class="badge-pulse"></span>
-      <span class="announcement-text">
-        <strong>Hackathon Edition:</strong> Real-time AI waste classification & smart recycling assistant.
-      </span>
-      <a href="#scanner" class="announcement-link">Try Live Scanner &rarr;</a>
-    </div>
-  </div>
-
   <!-- ================= NAVBAR ================= -->
   <header class="header" id="navbar">
     <div class="container navbar-container">
@@ -63,10 +52,10 @@
       <!-- Desktop Nav -->
       <nav class="desktop-nav" aria-label="Primary Navigation">
         <a href="#hero" class="nav-link active">Home</a>
-        <a href="#scanner" class="nav-link">Scan waste</a>
         <a href="#categories" class="nav-link">Categories</a>
         <a href="#how-it-works" class="nav-link">How It Works</a>
-        <a href="#impact" class="nav-link">Impact</a>
+        <a href="#recycling-hub" class="nav-link">Recycling Hub</a>
+        <a href="#schedule" class="nav-link">Schedule</a>
         <a href="#guide" class="nav-link">Waste Guide</a>
       </nav>
 
@@ -89,10 +78,10 @@
       <div class="mobile-drawer-inner">
         <nav class="mobile-nav">
           <a href="#hero" class="mobile-link">Home</a>
-          <a href="#scanner" class="mobile-link">Scan Waste</a>
           <a href="#categories" class="mobile-link">Categories</a>
           <a href="#how-it-works" class="mobile-link">How It Works</a>
-          <a href="#impact" class="mobile-link">Impact</a>
+          <a href="#recycling-hub" class="mobile-link">Recycling Hub</a>
+          <a href="#schedule" class="mobile-link">Schedule</a>
           <a href="#guide" class="mobile-link">Waste Guide</a>
         </nav>
         <div class="mobile-drawer-cta">
@@ -720,113 +709,373 @@
       </div>
     </section>
 
-    <!-- ================= 6. ENVIRONMENTAL IMPACT SECTION (DARK THEME) ================= -->
-    <section class="impact-section" id="impact">
-      <div class="impact-ambient-mesh"></div>
+    <!-- ================= 6. RECYCLING HUB SECTION ================= -->
+    <section class="recycling-hub-section" id="recycling-hub">
       <div class="container">
-        <div class="impact-header-grid">
-          <div>
-            <div class="badge-pill dark-badge">
-              <i data-lucide="globe-2" class="badge-icon"></i>
-              <span>REAL-TIME MEASURED SUSTAINABILITY</span>
-            </div>
-            <h2 class="impact-main-title">Small actions.<br><span class="text-glow">Bigger impact.</span></h2>
-            <p class="impact-description">
-              Proper segregation at the moment of disposal is the single most effective barrier against oceanic
-              microplastics and methane-generating open landfills.
-            </p>
+        <div class="section-header text-center">
+          <div class="section-badge">
+            <i data-lucide="recycle" class="section-badge-icon"></i>
+            <span>RESOURCE RECOVERY</span>
           </div>
+          <h2 class="section-title">EcoSort Recycling Hub</h2>
+          <p class="section-subtitle">
+            Master circular resource recovery: verified recyclable items, vital preparation protocols, and local drop-off & buyback opportunities.
+          </p>
+        </div>
 
-          <!-- Interactive Personal Impact Calculator -->
-          <div class="impact-calculator-card">
-            <div class="calc-header">
-              <div class="calc-title">
-                <i data-lucide="calculator" class="calc-icon"></i>
-                <span>Your Community Impact Estimator</span>
+        <!-- Hub Sub-navigation Tabs -->
+        <div class="hub-tabs-container">
+          <button class="hub-tab-btn active" data-hub-tab="items" id="tabBtnItems">
+            <i data-lucide="boxes"></i>
+            <span>Recyclable Items</span>
+          </button>
+          <button class="hub-tab-btn" data-hub-tab="prep" id="tabBtnPrep">
+            <i data-lucide="sparkles"></i>
+            <span>Preparation Instructions</span>
+          </button>
+          <button class="hub-tab-btn" data-hub-tab="opportunities" id="tabBtnOpps">
+            <i data-lucide="map-pin"></i>
+            <span>Recycling Opportunities</span>
+          </button>
+        </div>
+
+        <!-- Tab 1: Recyclable Items -->
+        <div class="hub-tab-content active" id="hubTabItems">
+          <div class="hub-grid-streams">
+            <!-- Stream 1: Rigid Plastics -->
+            <div class="hub-stream-card">
+              <div class="stream-card-icon blue">
+                <i data-lucide="package"></i>
               </div>
-              <span class="calc-badge">Dynamic</span>
+              <div class="stream-card-header">
+                <span class="stream-resin-tag">Resin Codes #1, #2, #5</span>
+                <h3 class="stream-title">Rigid Plastics</h3>
+              </div>
+              <p class="stream-desc">High-demand polymers with established mechanical circular reprocessing infrastructure.</p>
+              <ul class="stream-items-list">
+                <li><i data-lucide="check"></i> <span><strong>PET Beverage Bottles (#1):</strong> Water, soda, juice bottles</span></li>
+                <li><i data-lucide="check"></i> <span><strong>HDPE Containers (#2):</strong> Milk jugs, shampoo, detergent bottles</span></li>
+                <li><i data-lucide="check"></i> <span><strong>PP Food Containers (#5):</strong> Yogurt tubs, syrup bottles, margarine tubs</span></li>
+              </ul>
+              <div class="stream-caution">
+                <i data-lucide="alert-circle"></i>
+                <span>No plastic films, chip wrappers, or polystyrene foam (#6).</span>
+              </div>
             </div>
-            <div class="calc-body">
-              <label for="itemsSlider" class="calc-slider-label">
-                <span>Items segregated correctly per week:</span>
-                <strong id="sliderValueDisplay" class="slider-val">25 items</strong>
-              </label>
-              <input type="range" id="itemsSlider" min="5" max="100" value="25" step="5" class="calc-slider">
 
-              <div class="calc-results-grid">
-                <div class="calc-stat-box">
-                  <span class="calc-stat-number" id="calcCo2">12.5 kg</span>
-                  <span class="calc-stat-desc">CO₂ Emissions Avoided / mo</span>
-                </div>
-                <div class="calc-stat-box">
-                  <span class="calc-stat-number" id="calcLandfill">18.2 kg</span>
-                  <span class="calc-stat-desc">Landfill Mass Diverted / mo</span>
-                </div>
-                <div class="calc-stat-box">
-                  <span class="calc-stat-number" id="calcTrees">1.4</span>
-                  <span class="calc-stat-desc">Tree Seedling Equivalents</span>
-                </div>
+            <!-- Stream 2: Clean Paper & Cardboard -->
+            <div class="hub-stream-card">
+              <div class="stream-card-icon amber">
+                <i data-lucide="file-text"></i>
+              </div>
+              <div class="stream-card-header">
+                <span class="stream-resin-tag">Wood Fiber Repulping</span>
+                <h3 class="stream-title">Paper & Cardboard</h3>
+              </div>
+              <p class="stream-desc">Cellulose fibers capable of being repulped up to 5 to 7 times before degradation.</p>
+              <ul class="stream-items-list">
+                <li><i data-lucide="check"></i> <span><strong>Corrugated Shipping Boxes:</strong> Flattened e-commerce cartons</span></li>
+                <li><i data-lucide="check"></i> <span><strong>Office & Printing Paper:</strong> Documents, letters, envelopes</span></li>
+                <li><i data-lucide="check"></i> <span><strong>Cardstock & Cartons:</strong> Cereal boxes, tissue boxes, paper egg crates</span></li>
+              </ul>
+              <div class="stream-caution">
+                <i data-lucide="alert-circle"></i>
+                <span>Must be 100% dry. Avoid wax coatings, foil wrapping, or thermal receipts.</span>
+              </div>
+            </div>
+
+            <!-- Stream 3: Metals & Alloys -->
+            <div class="hub-stream-card">
+              <div class="stream-card-icon emerald">
+                <i data-lucide="shield"></i>
+              </div>
+              <div class="stream-card-header">
+                <span class="stream-resin-tag">100% Infinite Recycling</span>
+                <h3 class="stream-title">Metals & Aluminum</h3>
+              </div>
+              <p class="stream-desc">Can be melted and remanufactured perpetually without loss of tensile strength.</p>
+              <ul class="stream-items-list">
+                <li><i data-lucide="check"></i> <span><strong>Aluminum Cans:</strong> Carbonated soft drink & sparkling water cans</span></li>
+                <li><i data-lucide="check"></i> <span><strong>Steel / Tin Food Cans:</strong> Soup, canned beans, pet food tins</span></li>
+                <li><i data-lucide="check"></i> <span><strong>Clean Metal Lids:</strong> Jar lids, bottle crown caps</span></li>
+              </ul>
+              <div class="stream-caution">
+                <i data-lucide="alert-circle"></i>
+                <span>No pressurized propane canisters, paint cans with wet paint, or wire hangers.</span>
+              </div>
+            </div>
+
+            <!-- Stream 4: Glass Bottles & Jars -->
+            <div class="hub-stream-card">
+              <div class="stream-card-icon cyan">
+                <i data-lucide="wine"></i>
+              </div>
+              <div class="stream-card-header">
+                <span class="stream-resin-tag">Silica Glass Cullet</span>
+                <h3 class="stream-title">Glass Containers</h3>
+              </div>
+              <p class="stream-desc">Crushed into cullet to produce new bottles with significantly lower kiln energy consumption.</p>
+              <ul class="stream-items-list">
+                <li><i data-lucide="check"></i> <span><strong>Beverage Bottles:</strong> Wine, beer, juice, olive oil bottles</span></li>
+                <li><i data-lucide="check"></i> <span><strong>Food & Condiment Jars:</strong> Jam, pasta sauce, pickle jars</span></li>
+                <li><i data-lucide="check"></i> <span><strong>Cosmetic Glass Jars:</strong> Clean perfume & lotion glass</span></li>
+              </ul>
+              <div class="stream-caution">
+                <i data-lucide="alert-circle"></i>
+                <span>Do not mix window glass, mirrors, Pyrex, or ceramics (different melt temp).</span>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Impact Live KPI Grid with Animated SVG Progress Rings -->
-        <div class="impact-kpi-grid">
-          <!-- Card 1 -->
-          <div class="kpi-card">
-            <div class="kpi-ring-wrapper">
-              <svg class="progress-ring" width="100" height="100">
-                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40"
-                  cx="50" cy="50" />
-                <circle class="ring-progress" stroke="#10b981" stroke-width="8" stroke-dasharray="251.2"
-                  stroke-dashoffset="35" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" />
-              </svg>
-              <span class="ring-text">86%</span>
+        <!-- Tab 2: Preparation Instructions -->
+        <div class="hub-tab-content" id="hubTabPrep">
+          <div class="prep-instructions-wrapper">
+            <div class="prep-intro-card">
+              <div class="prep-intro-badge">CRITICAL PROTOCOL</div>
+              <h3 class="prep-intro-title">The 5 Rules of Flawless Recycling Prep</h3>
+              <p class="prep-intro-text">
+                Contamination is the #1 enemy of municipal recyclers. Just one half-empty yogurt tub can contaminate an entire 500 lb bale of recycled paper.
+              </p>
             </div>
-            <div class="kpi-info">
-              <div class="kpi-value">148,200+</div>
-              <div class="kpi-label">Items Correctly Classified</div>
-              <div class="kpi-sub">Across 18 participating pilot campuses</div>
-            </div>
-          </div>
 
-          <!-- Card 2 -->
-          <div class="kpi-card">
-            <div class="kpi-ring-wrapper">
-              <svg class="progress-ring" width="100" height="100">
-                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40"
-                  cx="50" cy="50" />
-                <circle class="ring-progress" stroke="#34d399" stroke-width="8" stroke-dasharray="251.2"
-                  stroke-dashoffset="60" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" />
-              </svg>
-              <span class="ring-text">76%</span>
-            </div>
-            <div class="kpi-info">
-              <div class="kpi-value">42.8 Tons</div>
-              <div class="kpi-label">Waste Diverted from Landfills</div>
-              <div class="kpi-sub">Directly routed to material recyclers</div>
-            </div>
-          </div>
+            <div class="prep-steps-grid">
+              <div class="prep-card">
+                <div class="prep-step-num">01</div>
+                <div class="prep-card-icon">
+                  <i data-lucide="droplet"></i>
+                </div>
+                <h4 class="prep-step-title">Empty & Lightly Rinse</h4>
+                <p class="prep-step-desc">
+                  Pour out all leftover beverages and sauces. Swirl a small splash of water to dislodge food solids. Items don't need to be dishwasher-clean, just free of sticky residue.
+                </p>
+              </div>
 
-          <!-- Card 3 -->
-          <div class="kpi-card">
-            <div class="kpi-ring-wrapper">
-              <svg class="progress-ring" width="100" height="100">
-                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40"
-                  cx="50" cy="50" />
-                <circle class="ring-progress" stroke="#06b6d4" stroke-width="8" stroke-dasharray="251.2"
-                  stroke-dashoffset="20" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50" />
-              </svg>
-              <span class="ring-text">92%</span>
-            </div>
-            <div class="kpi-info">
-              <div class="kpi-value">91.4%</div>
-              <div class="kpi-label">Recycling Stream Purity</div>
-              <div class="kpi-sub">Reduced batch contamination penalties</div>
+              <div class="prep-card">
+                <div class="prep-step-num">02</div>
+                <div class="prep-card-icon">
+                  <i data-lucide="minimize-2"></i>
+                </div>
+                <h4 class="prep-step-title">Crush & Flatten</h4>
+                <p class="prep-step-desc">
+                  Squash plastic bottles and collapse cardboard cartons flat. This saves up to 70% volume in collection trucks, directly reducing fuel consumption and vehicle transit runs.
+                </p>
+              </div>
+
+              <div class="prep-card">
+                <div class="prep-step-num">03</div>
+                <div class="prep-card-icon">
+                  <i data-lucide="split"></i>
+                </div>
+                <h4 class="prep-step-title">Separate Multi-Materials</h4>
+                <p class="prep-step-desc">
+                  Remove plastic pumps from lotion bottles, detach plastic film windows from paper mailers, and tear off greasy pizza box bottoms so only pristine cardboard enters the blue bin.
+                </p>
+              </div>
+
+              <div class="prep-card">
+                <div class="prep-step-num">04</div>
+                <div class="prep-card-icon">
+                  <i data-lucide="sun"></i>
+                </div>
+                <h4 class="prep-step-title">Keep Fibers Bone-Dry</h4>
+                <p class="prep-step-desc">
+                  Paper and cardboard lose molecular fiber integrity when damp and rot into non-recyclable slime. Always keep recycling bin lids tightly closed during rain.
+                </p>
+              </div>
+
+              <div class="prep-card">
+                <div class="prep-step-num">05</div>
+                <div class="prep-card-icon">
+                  <i data-lucide="unlock"></i>
+                </div>
+                <h4 class="prep-step-title">Keep Recyclables Loose</h4>
+                <p class="prep-step-desc">
+                  Never tie your recyclables inside plastic garbage bags! Plastic bags snag and seize optical sorting rotating discs. Empty your recyclables loosely directly into your curbside cart.
+                </p>
+              </div>
+
+              <div class="prep-card highlight-card">
+                <div class="prep-card-icon special">
+                  <i data-lucide="check-check"></i>
+                </div>
+                <h4 class="prep-step-title">The "When in Doubt" Rule</h4>
+                <p class="prep-step-desc">
+                  "Wish-cycling" causes more harm than good. If an item cannot be identified or cleaned, use our AI Scanner or place it into General Waste to safeguard stream purity.
+                </p>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Tab 3: Recycling Opportunities -->
+        <div class="hub-tab-content" id="hubTabOpportunities">
+          <div class="opportunities-grid">
+            <!-- Opportunity 1 -->
+            <div class="opportunity-card">
+              <div class="opp-badge cash">EARN CASH / DEPOSIT</div>
+              <div class="opp-header">
+                <div class="opp-icon-wrapper">
+                  <i data-lucide="coins"></i>
+                </div>
+                <div>
+                  <h3 class="opp-title">Bottle Return & Buyback Centers</h3>
+                  <span class="opp-tagline">Reverse Vending Machines & Redemption</span>
+                </div>
+              </div>
+              <p class="opp-desc">
+                Return eligible PET beverage bottles, aluminum cans, and glass containers to receive 5¢ to 10¢ per container. Supermarkets and municipal redemption depots offer instant cash or grocery credit.
+              </p>
+              <div class="opp-perks">
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Direct financial reward for clean sorting</span></div>
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Guaranteed closed-loop bottle-to-bottle reprocessing</span></div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm btn-block find-center-btn" data-center-type="Bottle Return & Buyback">
+                <i data-lucide="navigation"></i> <span>Locate Nearby Buyback Machines</span>
+              </button>
+            </div>
+
+            <!-- Opportunity 2 -->
+            <div class="opportunity-card">
+              <div class="opp-badge eco">FREE DROP-OFF</div>
+              <div class="opp-header">
+                <div class="opp-icon-wrapper">
+                  <i data-lucide="cpu"></i>
+                </div>
+                <div>
+                  <h3 class="opp-title">E-Waste & Battery Depots</h3>
+                  <span class="opp-tagline">Safe Chemical & Precious Metal Recovery</span>
+                </div>
+              </div>
+              <p class="opp-desc">
+                Safely dispose of dead laptop batteries, swollen phone cells, outdated chargers, and motherboards. Free drop-off kiosks available at participating electronics retail and municipal depots.
+              </p>
+              <div class="opp-perks">
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Prevents catastrophic truck & landfill battery fires</span></div>
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Extracts high-purity lithium, cobalt, and copper</span></div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm btn-block find-center-btn" data-center-type="E-Waste & Battery Depot">
+                <i data-lucide="navigation"></i> <span>Find Certified E-Waste Points</span>
+              </button>
+            </div>
+
+            <!-- Opportunity 3 -->
+            <div class="opportunity-card">
+              <div class="opp-badge community">COMMUNITY RE-USE</div>
+              <div class="opp-header">
+                <div class="opp-icon-wrapper">
+                  <i data-lucide="shirt"></i>
+                </div>
+                <div>
+                  <h3 class="opp-title">Textile & Garment Circular Bins</h3>
+                  <span class="opp-tagline">Apparel Upcycling & Fiber Shredding</span>
+                </div>
+              </div>
+              <p class="opp-desc">
+                Don't dump stained shirts or worn jeans into the trash. Community drop bins collect discarded garments: wearable items are donated, while worn textiles are converted into acoustic insulation.
+              </p>
+              <div class="opp-perks">
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Diverts fast fashion fibers from microplastic runoff</span></div>
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Supports charitable local shelter clothing drives</span></div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm btn-block find-center-btn" data-center-type="Textile Drop-off">
+                <i data-lucide="navigation"></i> <span>View Clothing Drop Locations</span>
+              </button>
+            </div>
+
+            <!-- Opportunity 4 -->
+            <div class="opportunity-card">
+              <div class="opp-badge bulk">COMMERCIAL RECOVERY</div>
+              <div class="opp-header">
+                <div class="opp-icon-wrapper">
+                  <i data-lucide="truck"></i>
+                </div>
+                <div>
+                  <h3 class="opp-title">Bulk Scrap & Cardboard Yards</h3>
+                  <span class="opp-tagline">High-Volume Moving & Appliance Disposals</span>
+                </div>
+              </div>
+              <p class="opp-desc">
+                Just moved into a new apartment or replaced a home appliance? Municipal transfer yards accept bulk corrugated cardboard stacks and white goods scrap metal at zero cost.
+              </p>
+              <div class="opp-perks">
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Free large-scale cardboard bundle recycling</span></div>
+                <div class="opp-perk-item"><i data-lucide="check-circle-2"></i> <span>Certified coolant recovery for old refrigerators</span></div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm btn-block find-center-btn" data-center-type="Bulk Scrap Station">
+                <i data-lucide="navigation"></i> <span>Explore Bulk Drop Stations</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= 7. COLLECTION SCHEDULE SECTION ================= -->
+    <section class="schedule-section" id="schedule">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">
+            <i data-lucide="calendar" class="section-badge-icon"></i>
+            <span>MUNICIPAL TIMETABLE</span>
+          </div>
+          <h2 class="section-title">Waste Collection Schedule</h2>
+          <p class="section-subtitle">
+            Never miss a bin collection day. Check verified pickup timetables for each stream and enable real-time curbside reminders.
+          </p>
+        </div>
+
+        <!-- Schedule Controls Bar -->
+        <div class="schedule-controls-bar">
+          <div class="zone-selector-wrapper">
+            <label for="zoneSelect" class="zone-label">
+              <i data-lucide="map-pin"></i>
+              <span>Select Service Area:</span>
+            </label>
+            <select id="zoneSelect" class="zone-select">
+              <option value="zone-a" selected>Zone A — Downtown, Central & University District</option>
+              <option value="zone-b">Zone B — North Suburbs & Residential Greenways</option>
+              <option value="zone-c">Zone C — West District & Waterfront Sector</option>
+            </select>
+          </div>
+
+          <div class="reminder-status-pill" id="scheduleReminderStatus">
+            <span class="status-pulse-dot"></span>
+            <span id="reminderSummaryText">Automated Curbside Alerts: <strong>Active (7:00 PM Prior)</strong></span>
+          </div>
+        </div>
+
+        <!-- Schedule Cards Grid -->
+        <div class="schedule-grid" id="scheduleGrid">
+          <!-- Populated dynamically via app.js initCollectionSchedule() -->
+        </div>
+
+        <!-- Automated Reminder Setup Banner -->
+        <div class="reminder-setup-banner">
+          <div class="reminder-banner-content">
+            <div class="reminder-icon-circle">
+              <i data-lucide="bell-ring"></i>
+            </div>
+            <div class="reminder-text-col">
+              <h3 class="reminder-banner-title">Never Miss a Bin Collection Morning</h3>
+              <p class="reminder-banner-desc">
+                Receive proactive reminders the evening before your collection day with customized sorting instructions for the morning's pickup.
+              </p>
+            </div>
+          </div>
+          <div class="reminder-banner-actions">
+            <button type="button" class="btn btn-secondary btn-sm" id="calendarSyncBtn">
+              <i data-lucide="calendar-plus"></i>
+              <span>Sync with Calendar</span>
+            </button>
+            <button type="button" class="btn btn-primary btn-sm" id="configureAlertsBtn">
+              <i data-lucide="sliders"></i>
+              <span>Configure Alerts</span>
+            </button>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -945,7 +1194,8 @@
             <li><a href="#scanner">AI Waste Scanner</a></li>
             <li><a href="#categories">Four Waste Streams</a></li>
             <li><a href="#how-it-works">How It Works</a></li>
-            <li><a href="#impact">Sustainability Impact</a></li>
+            <li><a href="#recycling-hub">Recycling Hub</a></li>
+            <li><a href="#schedule">Collection Schedule</a></li>
             <li><a href="#guide">Disposal Guide</a></li>
           </ul>
         </div>

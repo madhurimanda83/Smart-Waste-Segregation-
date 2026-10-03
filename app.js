@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initScanner();
   initWasteGuide();
-  initImpactCalculator();
+  initRecyclingHub();
+  initCollectionSchedule();
   initScrollSpy();
 });
 
@@ -908,32 +909,311 @@ function initWasteGuide() {
 }
 
 /* ==========================================================================
-   5. IMPACT ESTIMATOR CALCULATOR
+   5. RECYCLING HUB LOGIC
    ========================================================================== */
-function initImpactCalculator() {
-  const slider = document.getElementById('itemsSlider');
-  const sliderDisplay = document.getElementById('sliderValueDisplay');
-  const calcCo2 = document.getElementById('calcCo2');
-  const calcLandfill = document.getElementById('calcLandfill');
-  const calcTrees = document.getElementById('calcTrees');
+function initRecyclingHub() {
+  const tabBtns = document.querySelectorAll('.hub-tab-btn');
+  const tabContents = {
+    items: document.getElementById('hubTabItems'),
+    prep: document.getElementById('hubTabPrep'),
+    opportunities: document.getElementById('hubTabOpportunities')
+  };
 
-  if (!slider) return;
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-hub-tab');
 
-  slider.addEventListener('input', (e) => {
-    const val = parseInt(e.target.value, 10);
-    sliderDisplay.textContent = `${val} items / wk`;
+      // Update button active state
+      tabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-    // Multipliers for household monthly savings:
-    // val items/wk * 4.3 weeks/mo
-    const monthlyItems = val * 4.3;
-    const co2AvoidedKg = (monthlyItems * 0.116).toFixed(1);
-    const landfillAvoidedKg = (monthlyItems * 0.169).toFixed(1);
-    const treeEquiv = (monthlyItems * 0.013).toFixed(1);
+      // Update content visibility
+      Object.keys(tabContents).forEach(tabKey => {
+        if (tabContents[tabKey]) {
+          tabContents[tabKey].classList.toggle('active', tabKey === targetTab);
+        }
+      });
 
-    calcCo2.textContent = `${co2AvoidedKg} kg`;
-    calcLandfill.textContent = `${landfillAvoidedKg} kg`;
-    calcTrees.textContent = `${treeEquiv}`;
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+    });
   });
+
+  // Center locator buttons on Opportunities tab
+  const findCenterBtns = document.querySelectorAll('.find-center-btn');
+  findCenterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const centerType = btn.getAttribute('data-center-type') || 'Recycling Center';
+      showToast(`Locating nearby ${centerType} stations in your municipal zone...`);
+    });
+  });
+}
+
+/* ==========================================================================
+   6. COLLECTION SCHEDULE LOGIC
+   ========================================================================== */
+const SCHEDULE_DATA = {
+  'zone-a': [
+    {
+      id: 'sched-recyclable',
+      stream: 'Recyclable Waste',
+      binName: 'Blue Bin',
+      color: '#0284c7',
+      bg: '#e0f2fe',
+      icon: 'recycle',
+      day: 'Every Tuesday & Friday',
+      nextPickup: 'Tomorrow at 7:00 AM',
+      isUrgent: true,
+      items: 'Clean plastics (#1, #2, #5), flattened cardboard, soda cans & glass bottles',
+      reminderActive: true
+    },
+    {
+      id: 'sched-organic',
+      stream: 'Organic Compost',
+      binName: 'Green Bin',
+      color: '#16a34a',
+      bg: '#dcfce7',
+      icon: 'apple',
+      day: 'Every Wednesday',
+      nextPickup: 'In 3 Days (Wed 6:30 AM)',
+      isUrgent: false,
+      items: 'Fruit peels, vegetable trimmings, coffee grounds & certified compost bags',
+      reminderActive: true
+    },
+    {
+      id: 'sched-general',
+      stream: 'General Residual',
+      binName: 'Black / Grey Bin',
+      color: '#475569',
+      bg: '#f1f5f9',
+      icon: 'trash-2',
+      day: 'Mondays & Thursdays',
+      nextPickup: 'Next Monday at 7:00 AM',
+      isUrgent: false,
+      items: 'Non-recyclable multi-layer packaging, sanitary items & chip bags',
+      reminderActive: false
+    },
+    {
+      id: 'sched-hazardous',
+      stream: 'Hazardous & E-Waste',
+      binName: 'Red / Special Depot',
+      color: '#dc2626',
+      bg: '#fee2e2',
+      icon: 'alert-triangle',
+      day: '1st Saturday of Month',
+      nextPickup: 'Nov 7th (Special Mobile Van)',
+      isUrgent: false,
+      items: 'Lithium batteries, paints, aerosol canisters, dead chargers & electronic scrap',
+      reminderActive: true
+    }
+  ],
+
+  'zone-b': [
+    {
+      id: 'sched-recyclable',
+      stream: 'Recyclable Waste',
+      binName: 'Blue Bin',
+      color: '#0284c7',
+      bg: '#e0f2fe',
+      icon: 'recycle',
+      day: 'Mondays & Thursdays',
+      nextPickup: 'Next Monday at 7:00 AM',
+      isUrgent: false,
+      items: 'Clean plastics (#1, #2, #5), flattened cardboard, soda cans & glass bottles',
+      reminderActive: true
+    },
+    {
+      id: 'sched-organic',
+      stream: 'Organic Compost',
+      binName: 'Green Bin',
+      color: '#16a34a',
+      bg: '#dcfce7',
+      icon: 'apple',
+      day: 'Every Tuesday',
+      nextPickup: 'Tomorrow at 6:30 AM',
+      isUrgent: true,
+      items: 'Fruit peels, vegetable trimmings, coffee grounds & certified compost bags',
+      reminderActive: true
+    },
+    {
+      id: 'sched-general',
+      stream: 'General Residual',
+      binName: 'Black / Grey Bin',
+      color: '#475569',
+      bg: '#f1f5f9',
+      icon: 'trash-2',
+      day: 'Wednesdays & Saturdays',
+      nextPickup: 'In 2 Days at 7:00 AM',
+      isUrgent: false,
+      items: 'Non-recyclable multi-layer packaging, sanitary items & chip bags',
+      reminderActive: false
+    },
+    {
+      id: 'sched-hazardous',
+      stream: 'Hazardous & E-Waste',
+      binName: 'Red / Special Depot',
+      color: '#dc2626',
+      bg: '#fee2e2',
+      icon: 'alert-triangle',
+      day: '2nd Saturday of Month',
+      nextPickup: 'Nov 14th (Municipal Drive)',
+      isUrgent: false,
+      items: 'Lithium batteries, paints, aerosol canisters, dead chargers & electronic scrap',
+      reminderActive: true
+    }
+  ],
+
+  'zone-c': [
+    {
+      id: 'sched-recyclable',
+      stream: 'Recyclable Waste',
+      binName: 'Blue Bin',
+      color: '#0284c7',
+      bg: '#e0f2fe',
+      icon: 'recycle',
+      day: 'Wednesdays & Saturdays',
+      nextPickup: 'In 2 Days at 7:00 AM',
+      isUrgent: false,
+      items: 'Clean plastics (#1, #2, #5), flattened cardboard, soda cans & glass bottles',
+      reminderActive: true
+    },
+    {
+      id: 'sched-organic',
+      stream: 'Organic Compost',
+      binName: 'Green Bin',
+      color: '#16a34a',
+      bg: '#dcfce7',
+      icon: 'apple',
+      day: 'Every Friday',
+      nextPickup: 'This Friday at 6:30 AM',
+      isUrgent: false,
+      items: 'Fruit peels, vegetable trimmings, coffee grounds & certified compost bags',
+      reminderActive: true
+    },
+    {
+      id: 'sched-general',
+      stream: 'General Residual',
+      binName: 'Black / Grey Bin',
+      color: '#475569',
+      bg: '#f1f5f9',
+      icon: 'trash-2',
+      day: 'Tuesdays & Fridays',
+      nextPickup: 'Tomorrow at 7:00 AM',
+      isUrgent: true,
+      items: 'Non-recyclable multi-layer packaging, sanitary items & chip bags',
+      reminderActive: false
+    },
+    {
+      id: 'sched-hazardous',
+      stream: 'Hazardous & E-Waste',
+      binName: 'Red / Special Depot',
+      color: '#dc2626',
+      bg: '#fee2e2',
+      icon: 'alert-triangle',
+      day: 'Last Saturday of Month',
+      nextPickup: 'Oct 31st (Special Mobile Van)',
+      isUrgent: false,
+      items: 'Lithium batteries, paints, aerosol canisters, dead chargers & electronic scrap',
+      reminderActive: true
+    }
+  ]
+};
+
+function initCollectionSchedule() {
+  const zoneSelect = document.getElementById('zoneSelect');
+  const scheduleGrid = document.getElementById('scheduleGrid');
+  const calendarSyncBtn = document.getElementById('calendarSyncBtn');
+  const configureAlertsBtn = document.getElementById('configureAlertsBtn');
+
+  if (!scheduleGrid) return;
+
+  let currentZone = zoneSelect ? zoneSelect.value : 'zone-a';
+
+  function renderScheduleCards(zoneKey) {
+    const list = SCHEDULE_DATA[zoneKey] || SCHEDULE_DATA['zone-a'];
+    scheduleGrid.innerHTML = '';
+
+    list.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'schedule-card';
+
+      card.innerHTML = `
+        <div class="schedule-accent-bar" style="background-color: ${item.color};"></div>
+        <div class="schedule-card-top">
+          <div class="schedule-icon-circle" style="background-color: ${item.bg}; color: ${item.color};">
+            <i data-lucide="${item.icon}"></i>
+          </div>
+          <span class="next-pickup-tag ${item.isUrgent ? 'urgent' : ''}">${item.nextPickup}</span>
+        </div>
+
+        <h4 class="schedule-stream-title">${item.stream}</h4>
+        <span class="schedule-bin-label" style="color: ${item.color};">${item.binName}</span>
+
+        <div class="schedule-day-box">
+          <div class="day-box-label">Pickup Schedule</div>
+          <div class="day-box-val">${item.day}</div>
+        </div>
+
+        <p class="schedule-items-preview">${item.items}</p>
+
+        <div class="schedule-reminder-toggle-row">
+          <span class="reminder-toggle-label">
+            <i data-lucide="bell"></i>
+            <span>Pickup Reminder</span>
+          </span>
+          <label class="switch" aria-label="Toggle pickup reminder for ${item.stream}">
+            <input type="checkbox" ${item.reminderActive ? 'checked' : ''} data-stream="${item.stream}">
+            <span class="slider-switch"></span>
+          </label>
+        </div>
+      `;
+
+      // Handle reminder toggle
+      const checkbox = card.querySelector('input[type="checkbox"]');
+      checkbox.addEventListener('change', (e) => {
+        item.reminderActive = e.target.checked;
+        if (item.reminderActive) {
+          showToast(`Curbside alert ON: Reminder set for ${item.stream} (${item.day}) at 7:00 PM the evening before.`);
+        } else {
+          showToast(`Reminder muted for ${item.stream}.`);
+        }
+      });
+
+      scheduleGrid.appendChild(card);
+    });
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  // Initial render
+  renderScheduleCards(currentZone);
+
+  // Handle Zone dropdown change
+  if (zoneSelect) {
+    zoneSelect.addEventListener('change', (e) => {
+      currentZone = e.target.value;
+      renderScheduleCards(currentZone);
+      const zoneText = zoneSelect.options[zoneSelect.selectedIndex].text.split('—')[0].trim();
+      showToast(`Switched collection timetable to ${zoneText}`);
+    });
+  }
+
+  // Calendar sync button
+  if (calendarSyncBtn) {
+    calendarSyncBtn.addEventListener('click', () => {
+      showToast('Collection schedule synced! Added recurring curbside reminders to your calendar.');
+    });
+  }
+
+  // Configure alerts button
+  if (configureAlertsBtn) {
+    configureAlertsBtn.addEventListener('click', () => {
+      showToast('Alert preferences updated: Notification dispatched 7:00 PM before every pickup morning.');
+    });
+  }
 }
 
 /* ==========================================================================
