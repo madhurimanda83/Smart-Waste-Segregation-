@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   initNavigation();
   initScanner();
+  initWasteJourneyAndEcoWallet();
   initWasteGuide();
   initCollectionSchedule();
   initScrollSpy();
@@ -757,6 +758,8 @@ function initScanner() {
     // Impact Headline
     resImpactHeadline.textContent = item.impactHeadline || 'Proper segregation preserves recycling streams and keeps hazardous materials out of landfills.';
 
+    window.currentClassifiedItem = item;
+
     if (window.lucide) {
       window.lucide.createIcons();
     }
@@ -766,6 +769,27 @@ function initScanner() {
     } else {
       showToast(`Classified: ${item.name} &rarr; ${item.binName || item.category}`);
     }
+  }
+
+  // Track Waste & Reuse Flow Buttons
+  const trackWasteBtn = document.getElementById('trackWasteBtn');
+  const whoNeedsThisTriggerBtn = document.getElementById('whoNeedsThisTriggerBtn');
+
+  if (trackWasteBtn) {
+    trackWasteBtn.addEventListener('click', () => {
+      const itemToTrack = window.currentClassifiedItem || currentWasteData || WASTE_ITEMS_DATABASE.plastic_bottle;
+      if (window.startTrackingWasteItem) {
+        window.startTrackingWasteItem(itemToTrack);
+      }
+    });
+  }
+
+  if (whoNeedsThisTriggerBtn) {
+    whoNeedsThisTriggerBtn.addEventListener('click', () => {
+      if (window.openReuseDonationTab) {
+        window.openReuseDonationTab();
+      }
+    });
   }
 
   function resetScanner() {
@@ -1331,4 +1355,594 @@ function showToast(message) {
       }
     }, 280);
   }, 3200);
+}
+
+/* ==========================================================================
+   8. FROM TRASH TO IMPACT — WASTE JOURNEY & ECOPOINTS MODULE
+   ========================================================================== */
+function initWasteJourneyAndEcoWallet() {
+  // Reusable Data Structures
+  const userState = {
+    ecoPoints: 250,
+    streakDays: 5,
+    completedJourneys: 18,
+    activeBadge: 'Responsible Collector',
+    targetRewardGoal: 500
+  };
+
+  const DESTINATIONS = {
+    recyclable: 'EcoSort Partner Material Recovery Facility (MRF)',
+    organic: 'Community Aerobic Composting & Biomass Hub',
+    hazardous: 'Authorized Certified E-Waste & Chemical Facility',
+    general: 'EcoSort Waste-to-Energy Recovery Center',
+    reusable: 'Community Reuse & Donation Network'
+  };
+
+  const activeJourney = {
+    id: '#ES-2026-9041',
+    itemName: 'Plastic Water Bottle',
+    category: 'recyclable',
+    categoryLabel: 'Recyclable Stream',
+    emoji: '🧴',
+    destination: 'EcoSort Partner Material Recovery Facility (MRF)',
+    stage: 4, // 1 to 7
+    isVerified: false,
+    vehicleId: 'EV-Truck #04 • Curbside Fleet',
+    origin: 'Curbside Bay #12 (Residential Zone A)',
+    eta: 'Today • 3:45 PM (On Schedule)'
+  };
+
+  const stageDescriptions = [
+    { title: 'Waste Identified', badge: 'Completed', time: 'Today, 2:10 PM', statusText: 'AI Computer Vision Verified' },
+    { title: 'Collection Requested', badge: 'Dispatched', time: 'Today, 2:12 PM', statusText: 'Registered in Municipal Dispatch' },
+    { title: 'Pickup Scheduled', badge: 'Scheduled', time: 'Today, 2:30 PM', statusText: 'Assigned to EV Fleet' },
+    { title: 'Collected by Vehicle', badge: 'In Transit', time: 'Today, 3:05 PM', statusText: 'Collection Vehicle En Route' },
+    { title: 'Sorting / MRF Facility', badge: 'Check-In', time: 'Today, 3:45 PM', statusText: 'Checked in at Sorting Facility' },
+    { title: 'Recycled / Recovered', badge: 'Processing', time: 'Today, 5:00 PM', statusText: 'Undergoing Circular Recovery' },
+    { title: 'EcoPoints Unlocked', badge: 'Verified', time: 'Just Now', statusText: 'Disposal Journey Verified 🎉' }
+  ];
+
+  const rewardsCatalog = [
+    {
+      id: 'r1',
+      name: 'Eco Badge & Digital Certificate',
+      pts: 100,
+      icon: '🌱',
+      desc: 'Verified municipal digital badge & certificate recognizing your zero-contamination sorting.'
+    },
+    {
+      id: 'r2',
+      name: 'Zero Waste Bulk Market 15% Pass',
+      pts: 250,
+      icon: '🎟️',
+      desc: '15% off certified package-free bulk foods, grains, oils & pantry essentials.'
+    },
+    {
+      id: 'r3',
+      name: 'Eco Store $15 Voucher',
+      pts: 500,
+      icon: '🌿',
+      desc: 'Valid for plastic-free personal care, solid shampoos, and circular kitchen goods.'
+    },
+    {
+      id: 'r4',
+      name: 'Sustainable Travel Utensil Kit',
+      pts: 750,
+      icon: '🎁',
+      desc: 'Handcrafted bamboo travel cutlery, steel straw & organic cotton roll pouch.'
+    },
+    {
+      id: 'r5',
+      name: 'Community Tree-Planting Contribution',
+      pts: 1000,
+      icon: '🌳',
+      desc: 'Sponsors 1 native shade tree planted with GPS coordinates in your city greenway.'
+    }
+  ];
+
+  let transactions = [
+    { pts: 50, title: 'Verified recycling check-in #ES-8924', time: 'Today • 1:15 PM', type: 'credit' },
+    { pts: 20, title: 'Curbside collection completed by EV-04', time: 'Today • 11:30 AM', type: 'credit' },
+    { pts: 10, title: 'Disposal guidance completed (Light bulb)', time: 'Yesterday • 4:20 PM', type: 'credit' },
+    { pts: 50, title: 'Community donation verified (Study desk)', time: '2 days ago', type: 'credit' },
+    { pts: -250, title: 'Partner reward redeemed (Bulk market)', time: '3 days ago', type: 'debit' }
+  ];
+
+  let notifications = [
+    { icon: '🚚', msg: 'Your waste pickup was completed by EV-Truck #04.', time: '25m ago', unread: true },
+    { icon: '🏭', msg: 'Plastic Bottle checked in at EcoSort Partner MRF.', time: '1h ago', unread: true },
+    { icon: '♻️', msg: 'Recycling journey verified (#ES-8924).', time: '2h ago', unread: true },
+    { icon: '🎉', msg: 'You unlocked the "Responsible Collector" badge!', time: 'Yesterday', unread: false }
+  ];
+
+  const journeyHistory = [
+    { name: 'Plastic Water Bottle', cat: 'recyclable', catLabel: 'Recyclable', icon: '🧴', dest: 'EcoSort Partner MRF (Sector 4)', date: 'Today, 2:10 PM', status: 'Recycled & Pelleted', pts: '+50 pts' },
+    { name: 'AA Alkaline Battery Pack', cat: 'hazardous', catLabel: 'Hazardous', icon: '🔋', dest: 'Authorized Certified E-Waste Hub', date: 'Yesterday, 3:40 PM', status: 'Heavy Metal Neutralized', pts: '+70 pts' },
+    { name: 'Fruit & Vegetable Scraps', cat: 'organic', catLabel: 'Organic', icon: '🍌', dest: 'Community Aerobic Composting Hub', date: '2 days ago', status: 'Composted into Humus', pts: '+30 pts' },
+    { name: 'Corrugated Shipping Box', cat: 'recyclable', catLabel: 'Recyclable', icon: '📦', dest: 'Regional Fiber Recovery Facility', date: '4 days ago', status: 'Repulped into Kraft Liner', pts: '+50 pts' },
+    { name: 'Takeout Single-Use Cup', cat: 'general', catLabel: 'General Waste', icon: '☕', dest: 'EcoSort Waste-to-Energy Recovery', date: '5 days ago', status: 'Thermal Energy Recovery', pts: '+15 pts' }
+  ];
+
+  // DOM Elements
+  const userEcoPointsEl = document.getElementById('userEcoPoints');
+  const navEcoPointsEl = document.getElementById('navEcoPoints');
+  const walletBalanceBigEl = document.getElementById('walletBalanceBig');
+  const targetRewardProgressFill = document.getElementById('targetRewardProgressFill');
+  const targetRemainingText = document.getElementById('targetRemainingText');
+  const targetPercentText = document.getElementById('targetPercentText');
+  const rewardsGrid = document.getElementById('rewardsGrid');
+  const transactionsList = document.getElementById('transactionsList');
+  const journeyHistoryList = document.getElementById('journeyHistoryList');
+  const notifList = document.getElementById('notifList');
+  const notifBellBtn = document.getElementById('notifBellBtn');
+  const notifDropdown = document.getElementById('notifDropdown');
+  const notifBadgeDot = document.getElementById('notifBadgeDot');
+  const notifCountTag = document.getElementById('notifCountTag');
+
+  // Journey Elements
+  const activeItemNameEl = document.getElementById('activeItemName');
+  const activeItemDestNameEl = document.getElementById('activeItemDestName');
+  const activeItemCatPillEl = document.getElementById('activeItemCatPill');
+  const activeItemEmojiEl = document.getElementById('activeItemEmoji');
+  const trackingStatusTextEl = document.getElementById('trackingStatusText');
+  const trackDestEl = document.getElementById('trackDest');
+  const advanceStageBtn = document.getElementById('advanceStageBtn');
+  const advanceBtnText = document.getElementById('advanceBtnText');
+  const resetStageBtn = document.getElementById('resetStageBtn');
+  const verificationMilestoneCard = document.getElementById('verificationMilestoneCard');
+  const viewWalletFromJourneyBtn = document.getElementById('viewWalletFromJourneyBtn');
+
+  // Donation / Reuse Elements
+  const confirmDonationBtn = document.getElementById('confirmDonationBtn');
+  const toggleRulesBtn = document.getElementById('toggleRulesBtn');
+  const pointRulesCard = document.getElementById('pointRulesCard');
+
+  // 1. Initial Render
+  updatePointsDisplay();
+  renderTimeline(activeJourney.stage);
+  renderRewardsCatalog();
+  renderTransactionsList();
+  renderNotificationsList();
+  renderJourneyHistoryList();
+
+  // 2. Tab Navigation
+  const tabBtns = document.querySelectorAll('.journey-tab-btn');
+  const tabPanes = document.querySelectorAll('.journey-tab-pane');
+
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetTab = btn.getAttribute('data-tab');
+      activateTab(targetTab);
+    });
+  });
+
+  function activateTab(tabId) {
+    tabBtns.forEach(b => {
+      const isCurrent = b.getAttribute('data-tab') === tabId;
+      b.classList.toggle('active', isCurrent);
+      b.setAttribute('aria-selected', isCurrent ? 'true' : 'false');
+    });
+
+    tabPanes.forEach(pane => {
+      if (pane.id === `pane-${tabId}`) {
+        pane.style.display = 'block';
+      } else {
+        pane.style.display = 'none';
+      }
+    });
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  // 3. Update Points & Progress Bar
+  function updatePointsDisplay() {
+    if (userEcoPointsEl) userEcoPointsEl.textContent = userState.ecoPoints;
+    if (navEcoPointsEl) navEcoPointsEl.textContent = userState.ecoPoints;
+    if (walletBalanceBigEl) walletBalanceBigEl.textContent = userState.ecoPoints;
+
+    const goal = userState.targetRewardGoal;
+    const current = userState.ecoPoints;
+    const pct = Math.min(100, Math.round((current / goal) * 100));
+    const remaining = Math.max(0, goal - current);
+
+    if (targetRewardProgressFill) {
+      targetRewardProgressFill.style.width = `${pct}%`;
+    }
+    if (targetPercentText) {
+      targetPercentText.textContent = `${pct}% Completed`;
+    }
+    if (targetRemainingText) {
+      if (remaining > 0) {
+        targetRemainingText.innerHTML = `<strong>${remaining} more points</strong> needed to unlock this voucher`;
+      } else {
+        targetRemainingText.innerHTML = `<strong class="text-emerald">Target Reached! Ready to redeem voucher.</strong>`;
+      }
+    }
+  }
+
+  // 4. Render 7-Stage Timeline
+  function renderTimeline(currentStage) {
+    const nodes = document.querySelectorAll('.journey-timeline .timeline-node');
+    nodes.forEach(node => {
+      const stageNum = parseInt(node.getAttribute('data-stage'), 10);
+      node.classList.remove('completed', 'active', 'pending');
+
+      const statusBadge = node.querySelector('.node-status-badge');
+      const iconCircle = node.querySelector('.node-icon-circle');
+
+      if (stageNum < currentStage) {
+        node.classList.add('completed');
+        if (statusBadge) {
+          statusBadge.className = 'node-status-badge completed';
+          statusBadge.textContent = 'Completed';
+        }
+        if (iconCircle) {
+          iconCircle.innerHTML = '<i data-lucide="check"></i>';
+        }
+      } else if (stageNum === currentStage) {
+        node.classList.add('active');
+        if (statusBadge) {
+          statusBadge.className = 'node-status-badge active';
+          statusBadge.textContent = stageDescriptions[stageNum - 1]?.badge || 'Active';
+        }
+        if (iconCircle) {
+          iconCircle.className = 'node-icon-circle pulse';
+        }
+      } else {
+        node.classList.add('pending');
+        if (statusBadge) {
+          statusBadge.className = 'node-status-badge pending';
+          statusBadge.textContent = stageNum === 7 ? '+50 pts' : 'Upcoming';
+        }
+        if (iconCircle) {
+          iconCircle.className = 'node-icon-circle';
+        }
+      }
+    });
+
+    if (trackingStatusTextEl) {
+      trackingStatusTextEl.textContent = stageDescriptions[currentStage - 1]?.statusText || 'In Progress';
+    }
+
+    // Toggle verification milestone banner
+    if (verificationMilestoneCard) {
+      if (currentStage >= 7) {
+        verificationMilestoneCard.style.display = 'flex';
+        if (advanceBtnText) advanceBtnText.textContent = 'Journey Verified ✓';
+        if (advanceStageBtn) advanceStageBtn.disabled = true;
+      } else {
+        verificationMilestoneCard.style.display = 'none';
+        if (advanceBtnText) advanceBtnText.textContent = 'Advance Next Stage →';
+        if (advanceStageBtn) advanceStageBtn.disabled = false;
+      }
+    }
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }
+
+  // 5. Advance Stage (Simulation Button)
+  if (advanceStageBtn) {
+    advanceStageBtn.addEventListener('click', () => {
+      if (activeJourney.stage < 7) {
+        activeJourney.stage += 1;
+        renderTimeline(activeJourney.stage);
+
+        const currentStageInfo = stageDescriptions[activeJourney.stage - 1];
+        showToast(`Journey advanced to Stage ${activeJourney.stage}: ${currentStageInfo.title}`);
+
+        // Stage 7 Reached: Unlock Points
+        if (activeJourney.stage === 7 && !activeJourney.isVerified) {
+          activeJourney.isVerified = true;
+          userState.ecoPoints += 50;
+          userState.completedJourneys += 1;
+          const journeyCountEl = document.getElementById('userJourneysCount');
+          if (journeyCountEl) journeyCountEl.textContent = userState.completedJourneys;
+
+          updatePointsDisplay();
+
+          // Add transaction
+          transactions.unshift({
+            pts: 50,
+            title: `Verified recycling check-in (${activeJourney.itemName})`,
+            time: 'Just now',
+            type: 'credit'
+          });
+          renderTransactionsList();
+
+          // Add notification
+          notifications.unshift({
+            icon: '🎉',
+            msg: `+50 EcoPoints unlocked for verified recycling of ${activeJourney.itemName}!`,
+            time: 'Just now',
+            unread: true
+          });
+          renderNotificationsList();
+
+          showToast('🎉 Milestone Verified! +50 EcoPoints credited to your EcoWallet.');
+          renderRewardsCatalog(); // update redeem buttons state
+        }
+      }
+    });
+  }
+
+  // Reset Stage (Simulation Button)
+  if (resetStageBtn) {
+    resetStageBtn.addEventListener('click', () => {
+      activeJourney.stage = 1;
+      activeJourney.isVerified = false;
+      renderTimeline(1);
+      showToast('Waste journey reset to Stage 1 (Waste Identified).');
+    });
+  }
+
+  // View Wallet from Journey Banner
+  if (viewWalletFromJourneyBtn) {
+    viewWalletFromJourneyBtn.addEventListener('click', () => {
+      activateTab('wallet');
+    });
+  }
+
+  // 6. External Hook: Start Tracking from Scanner Result
+  window.startTrackingWasteItem = function (item) {
+    if (!item) return;
+
+    activeJourney.itemName = item.name || 'Identified Waste Item';
+    activeJourney.category = item.category || 'recyclable';
+    activeJourney.categoryLabel = item.categoryLabel || (item.category ? item.category.toUpperCase() : 'Recyclable Stream');
+    activeJourney.destination = DESTINATIONS[item.category] || DESTINATIONS.recyclable;
+    activeJourney.stage = 4; // Starts comfortably in pickup transit
+    activeJourney.isVerified = false;
+
+    // Pick emoji
+    const emojiMap = {
+      recyclable: '🧴',
+      organic: '🍌',
+      hazardous: '🔋',
+      general: '☕'
+    };
+    activeJourney.emoji = emojiMap[item.category] || '♻️';
+
+    // Update DOM
+    if (activeItemNameEl) activeItemNameEl.textContent = activeJourney.itemName;
+    if (activeItemDestNameEl) activeItemDestNameEl.textContent = activeJourney.destination;
+    if (trackDestEl) trackDestEl.textContent = activeJourney.destination;
+    if (activeItemEmojiEl) activeItemEmojiEl.textContent = activeJourney.emoji;
+
+    if (activeItemCatPillEl) {
+      activeItemCatPillEl.className = `cat-pill ${item.category || 'recyclable'}`;
+      activeItemCatPillEl.textContent = activeJourney.categoryLabel;
+    }
+
+    renderTimeline(4);
+    activateTab('tracker');
+
+    // Smooth scroll to waste journey section
+    const journeySection = document.getElementById('waste-journey');
+    if (journeySection) {
+      journeySection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    showToast(`Now Tracking: "${activeJourney.itemName}" → ${activeJourney.destination}`);
+  };
+
+  // External Hook: Open Reuse / Donation Tab
+  window.openReuseDonationTab = function () {
+    activateTab('reuse');
+    const journeySection = document.getElementById('waste-journey');
+    if (journeySection) {
+      journeySection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // 7. Toggle Point Rules
+  if (toggleRulesBtn && pointRulesCard) {
+    toggleRulesBtn.addEventListener('click', () => {
+      const isVisible = pointRulesCard.style.display !== 'none';
+      pointRulesCard.style.display = isVisible ? 'none' : 'block';
+      toggleRulesBtn.innerHTML = isVisible
+        ? '<i data-lucide="help-circle"></i><span>How to Earn Points</span>'
+        : '<i data-lucide="chevron-up"></i><span>Hide Rules</span>';
+      if (window.lucide) window.lucide.createIcons();
+    });
+  }
+
+  // 8. Render Rewards Catalog
+  function renderRewardsCatalog() {
+    if (!rewardsGrid) return;
+    rewardsGrid.innerHTML = '';
+
+    rewardsCatalog.forEach(reward => {
+      const canAfford = userState.ecoPoints >= reward.pts;
+      const card = document.createElement('div');
+      card.className = 'reward-card';
+      card.innerHTML = `
+        <div>
+          <div class="reward-top-row">
+            <span class="reward-icon-circle">${reward.icon}</span>
+            <span class="reward-cost-tag">${reward.pts} EcoPoints</span>
+          </div>
+          <h5 class="reward-name">${reward.name}</h5>
+          <p class="reward-desc">${reward.desc}</p>
+        </div>
+        <div class="reward-action-row">
+          <span class="reward-status-note">${canAfford ? '✓ Ready to Claim' : `${reward.pts - userState.ecoPoints} more pts needed`}</span>
+          <button type="button" class="btn ${canAfford ? 'btn-primary' : 'btn-outline'} btn-sm btn-redeem" data-reward-id="${reward.id}">
+            <span>${canAfford ? 'Redeem' : 'Locked'}</span>
+          </button>
+        </div>
+      `;
+
+      const redeemBtn = card.querySelector('.btn-redeem');
+      redeemBtn.addEventListener('click', () => {
+        handleRedemption(reward);
+      });
+
+      rewardsGrid.appendChild(card);
+    });
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function handleRedemption(reward) {
+    if (userState.ecoPoints >= reward.pts) {
+      userState.ecoPoints -= reward.pts;
+      updatePointsDisplay();
+
+      // Add to transaction history
+      transactions.unshift({
+        pts: -reward.pts,
+        title: `Redeemed: ${reward.name}`,
+        time: 'Just now',
+        type: 'debit'
+      });
+      renderTransactionsList();
+
+      // Add notification
+      notifications.unshift({
+        icon: reward.icon,
+        msg: `Successfully redeemed "${reward.name}" (-${reward.pts} pts).`,
+        time: 'Just now',
+        unread: true
+      });
+      renderNotificationsList();
+
+      renderRewardsCatalog();
+      showToast(`🎉 Reward Claimed: "${reward.name}"! Voucher voucher code sent.`);
+    } else {
+      const diff = reward.pts - userState.ecoPoints;
+      showToast(`You need ${diff} more EcoPoints to redeem this reward. Keep sorting!`);
+    }
+  }
+
+  // 9. Render Transactions List
+  function renderTransactionsList() {
+    if (!transactionsList) return;
+    transactionsList.innerHTML = '';
+
+    transactions.forEach(tx => {
+      const item = document.createElement('div');
+      item.className = 'transaction-item';
+      const isCredit = tx.type === 'credit';
+      item.innerHTML = `
+        <span class="trans-pts-pill ${isCredit ? 'positive' : 'negative'}">
+          ${isCredit ? '+' : ''}${tx.pts} pts
+        </span>
+        <div class="trans-info">
+          <span class="trans-title">${tx.title}</span>
+          <span class="trans-time">${tx.time}</span>
+        </div>
+      `;
+      transactionsList.appendChild(item);
+    });
+  }
+
+  // 10. Render Journey History
+  function renderJourneyHistoryList() {
+    if (!journeyHistoryList) return;
+    journeyHistoryList.innerHTML = '';
+
+    journeyHistory.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'history-item-row';
+      row.innerHTML = `
+        <div class="h-left">
+          <div class="h-avatar">${item.icon}</div>
+          <div>
+            <div class="h-name">${item.name}</div>
+            <div class="h-meta">Destination: <strong>${item.dest}</strong> &bull; ${item.date}</div>
+          </div>
+        </div>
+        <div class="h-right">
+          <span class="h-status-badge">✓ ${item.status}</span>
+          <span class="h-pts-badge">${item.pts}</span>
+        </div>
+      `;
+      journeyHistoryList.appendChild(row);
+    });
+  }
+
+  // 11. Render Notifications
+  function renderNotificationsList() {
+    if (!notifList) return;
+    notifList.innerHTML = '';
+
+    const unreadCount = notifications.filter(n => n.unread).length;
+    if (notifBadgeDot) notifBadgeDot.style.display = unreadCount > 0 ? 'block' : 'none';
+    if (notifCountTag) notifCountTag.textContent = `${unreadCount} New`;
+
+    notifications.forEach(notif => {
+      const div = document.createElement('div');
+      div.className = 'notif-item';
+      div.innerHTML = `
+        <span class="notif-item-icon">${notif.icon}</span>
+        <div class="notif-item-content">
+          <p class="notif-item-msg">${notif.msg}</p>
+          <span class="notif-item-time">${notif.time}</span>
+        </div>
+      `;
+      notifList.appendChild(div);
+    });
+  }
+
+  // Notification Bell Toggle
+  if (notifBellBtn && notifDropdown) {
+    notifBellBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isShown = notifDropdown.style.display === 'block';
+      notifDropdown.style.display = isShown ? 'none' : 'block';
+
+      // Mark all as read when opened
+      if (!isShown) {
+        notifications.forEach(n => n.unread = false);
+        if (notifBadgeDot) notifBadgeDot.style.display = 'none';
+        if (notifCountTag) notifCountTag.textContent = '0 New';
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!notifDropdown.contains(e.target) && e.target !== notifBellBtn) {
+        notifDropdown.style.display = 'none';
+      }
+    });
+  }
+
+  // 12. "Who Needs This?" Donation Verification Simulation
+  if (confirmDonationBtn) {
+    confirmDonationBtn.addEventListener('click', () => {
+      userState.ecoPoints += 50;
+      updatePointsDisplay();
+
+      transactions.unshift({
+        pts: 50,
+        title: 'Community Donation Verified (Study Table #DN-41)',
+        time: 'Just now',
+        type: 'credit'
+      });
+      renderTransactionsList();
+
+      notifications.unshift({
+        icon: '🤝',
+        msg: 'Community donation verified! Study table delivered to Green Springs Youth Center (+50 pts).',
+        time: 'Just now',
+        unread: true
+      });
+      renderNotificationsList();
+
+      renderRewardsCatalog();
+      showToast('🎉 Donation Verified! +50 EcoPoints credited to your EcoWallet for community reuse.');
+    });
+  }
+
+  // Reuse Option Buttons selector
+  const optButtons = document.querySelectorAll('.reuse-option-card');
+  optButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      optButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
 }

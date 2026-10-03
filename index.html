@@ -52,14 +52,44 @@
       <!-- Desktop Nav -->
       <nav class="desktop-nav" aria-label="Primary Navigation">
         <a href="#hero" class="nav-link active">Home</a>
+        <a href="#scanner" class="nav-link">Scanner</a>
+        <a href="#waste-journey" class="nav-link">Waste Journey</a>
         <a href="#categories" class="nav-link">Categories</a>
-        <a href="#how-it-works" class="nav-link">How It Works</a>
         <a href="#schedule" class="nav-link">Schedule</a>
         <a href="#guide" class="nav-link">Waste Guide</a>
       </nav>
 
       <!-- Nav Action -->
       <div class="nav-actions">
+        <!-- EcoWallet Quick Pill -->
+        <a href="#waste-journey" class="nav-wallet-pill" id="navWalletPill" title="Open EcoWallet & Points">
+          <span class="wallet-icon">🌱</span>
+          <span class="wallet-pts" id="navEcoPoints">250</span>
+          <span class="wallet-label">pts</span>
+        </a>
+
+        <!-- Notification Bell & Dropdown -->
+        <div class="nav-notif-wrapper">
+          <button type="button" class="nav-notif-btn" id="notifBellBtn" aria-label="Journey Notifications" aria-expanded="false">
+            <i data-lucide="bell"></i>
+            <span class="notif-badge-dot" id="notifBadgeDot"></span>
+          </button>
+
+          <!-- Notification Dropdown Panel -->
+          <div class="notif-dropdown" id="notifDropdown" style="display: none;">
+            <div class="notif-header">
+              <span class="notif-title">Journey Updates</span>
+              <span class="notif-count-tag" id="notifCountTag">3 New</span>
+            </div>
+            <div class="notif-list" id="notifList">
+              <!-- Dynamically populated or default items -->
+            </div>
+            <div class="notif-footer">
+              <a href="#waste-journey" class="notif-view-all">View Waste Journey &rarr;</a>
+            </div>
+          </div>
+        </div>
+
         <a href="#scanner" class="btn btn-primary btn-sm nav-scan-btn">
           <i data-lucide="scan-line" class="btn-icon"></i>
           <span>Scan Waste</span>
@@ -77,8 +107,9 @@
       <div class="mobile-drawer-inner">
         <nav class="mobile-nav">
           <a href="#hero" class="mobile-link">Home</a>
+          <a href="#scanner" class="mobile-link">Scanner</a>
+          <a href="#waste-journey" class="mobile-link">Waste Journey & EcoPoints</a>
           <a href="#categories" class="mobile-link">Categories</a>
-          <a href="#how-it-works" class="mobile-link">How It Works</a>
           <a href="#schedule" class="mobile-link">Schedule</a>
           <a href="#guide" class="mobile-link">Waste Guide</a>
         </nav>
@@ -493,17 +524,642 @@
                 </div>
               </div>
 
-              <!-- Reset / Scan Another Button -->
+              <!-- Action Buttons: Track Waste & Reuse Flow -->
               <div class="result-actions">
-                <button type="button" class="btn btn-outline btn-block" id="scanAgainBtn">
+                <button type="button" class="btn btn-primary btn-block btn-lg" id="trackWasteBtn">
+                  <i data-lucide="navigation"></i>
+                  <span>Track This Waste Journey &rarr;</span>
+                </button>
+                <div class="result-secondary-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" id="whoNeedsThisTriggerBtn">
+                    <i data-lucide="heart-handshake"></i>
+                    <span>Who Needs This? (Reuse / Donate)</span>
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" id="scanAgainBtn">
+                    <i data-lucide="rotate-ccw"></i>
+                    <span>Scan Another Item</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3.5. FROM TRASH TO IMPACT — WASTE JOURNEY & ECOPOINTS ================= -->
+    <section class="journey-section" id="waste-journey">
+      <div class="container">
+        <!-- Section Header -->
+        <div class="section-header text-center">
+          <div class="section-badge highlight">
+            <i data-lucide="compass" class="section-badge-icon"></i>
+            <span>FROM TRASH TO IMPACT</span>
+          </div>
+          <h2 class="section-title">Don't Just Throw It Away.<br><span class="highlight-text">Know Where It Goes.</span></h2>
+          <p class="section-subtitle">
+            Follow your waste after identification. Track collection, sorting facility recovery, verified circular completion, and earn redeemable EcoPoints.
+          </p>
+        </div>
+
+        <!-- User Quick Dashboard Strip -->
+        <div class="journey-dashboard-strip">
+          <div class="journey-stat-card">
+            <div class="stat-icon-wrap mint">
+              <span class="stat-emoji">🌱</span>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value-group">
+                <span class="stat-val" id="userEcoPoints">250</span>
+                <span class="stat-unit">pts</span>
+              </div>
+              <div class="stat-title">EcoWallet Balance</div>
+              <div class="stat-note text-emerald">Verified Action Points</div>
+            </div>
+          </div>
+
+          <div class="journey-stat-card">
+            <div class="stat-icon-wrap warm">
+              <span class="stat-emoji">🔥</span>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value-group">
+                <span class="stat-val" id="userStreak">5</span>
+                <span class="stat-unit">Days</span>
+              </div>
+              <div class="stat-title">Eco Streak</div>
+              <div class="stat-note text-amber">+25 pts in 2 days</div>
+            </div>
+          </div>
+
+          <div class="journey-stat-card">
+            <div class="stat-icon-wrap blue">
+              <span class="stat-emoji">♻️</span>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value-group">
+                <span class="stat-val" id="userJourneysCount">18</span>
+                <span class="stat-unit">Items</span>
+              </div>
+              <div class="stat-title">Journeys Completed</div>
+              <div class="stat-note text-blue">100% Diverted from Landfill</div>
+            </div>
+          </div>
+
+          <div class="journey-stat-card">
+            <div class="stat-icon-wrap purple">
+              <span class="stat-emoji">🏆</span>
+            </div>
+            <div class="stat-info">
+              <div class="stat-value-group">
+                <span class="stat-val-sm" id="userBadgeName">Responsible Collector</span>
+              </div>
+              <div class="stat-title">Active Eco Badge</div>
+              <div class="stat-note text-purple">3 more to Recycling Champion</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Journey Sub-Tabs Navigation -->
+        <div class="journey-tab-nav" role="tablist">
+          <button type="button" class="journey-tab-btn active" data-tab="tracker" role="tab" aria-selected="true">
+            <i data-lucide="navigation"></i>
+            <span>Active Journey</span>
+            <span class="tab-pulse-tag">Live</span>
+          </button>
+          <button type="button" class="journey-tab-btn" data-tab="wallet" role="tab" aria-selected="false">
+            <i data-lucide="wallet"></i>
+            <span>EcoWallet & Rewards</span>
+          </button>
+          <button type="button" class="journey-tab-btn" data-tab="history" role="tab" aria-selected="false">
+            <i data-lucide="history"></i>
+            <span>My Waste Journeys</span>
+            <span class="tab-count-tag" id="tabCountHistory">18</span>
+          </button>
+          <button type="button" class="journey-tab-btn" data-tab="reuse" role="tab" aria-selected="false">
+            <i data-lucide="heart-handshake"></i>
+            <span>"Who Needs This?" (Reuse)</span>
+          </button>
+        </div>
+
+        <!-- ================= TAB 1: ACTIVE WASTE JOURNEY ================= -->
+        <div class="journey-tab-pane active" id="pane-tracker">
+          <div class="journey-main-card">
+            <!-- Active Item Banner -->
+            <div class="active-item-header">
+              <div class="active-item-left">
+                <div class="active-item-avatar" id="activeItemAvatar">
+                  <span id="activeItemEmoji">🧴</span>
+                </div>
+                <div class="active-item-details">
+                  <div class="active-item-category-row">
+                    <span class="cat-pill recyclable" id="activeItemCatPill">Recyclable Stream</span>
+                    <span class="journey-id-tag" id="activeJourneyId">Tracking #ES-2026-9041</span>
+                  </div>
+                  <h3 class="active-item-name" id="activeItemName">Plastic Water Bottle</h3>
+                  <p class="active-item-dest-sub">
+                    Target Destination: <strong id="activeItemDestName">EcoSort Partner Material Recovery Facility (MRF)</strong>
+                  </p>
+                </div>
+              </div>
+              <div class="active-item-right">
+                <div class="item-points-incentive">
+                  <span class="pts-reward-badge">+50 EcoPoints</span>
+                  <span class="pts-unlock-note">Awarded upon facility recovery</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Live/Demo Tracking Card -->
+            <div class="demo-tracking-card">
+              <div class="tracking-card-header">
+                <div class="tracking-live-indicator">
+                  <span class="live-dot-pulse"></span>
+                  <span class="tracking-status-headline" id="trackingStatusText">Collection Vehicle En Route</span>
+                </div>
+                <div class="tracking-vehicle-pill">
+                  <i data-lucide="truck"></i>
+                  <span id="trackingVehicleId">EV-Truck #04 &bull; Curbside Fleet</span>
+                </div>
+              </div>
+
+              <div class="tracking-details-grid">
+                <div class="track-col">
+                  <span class="track-col-label">Pickup Origin</span>
+                  <span class="track-col-val" id="trackOrigin">Curbside Bay #12 (Residential Zone A)</span>
+                </div>
+                <div class="track-col">
+                  <span class="track-col-label">Current Destination</span>
+                  <span class="track-col-val" id="trackDest">EcoSort Partner Recovery Hub (Sector 4)</span>
+                </div>
+                <div class="track-col">
+                  <span class="track-col-label">Estimated Facility Check-In</span>
+                  <span class="track-col-val text-emerald" id="trackEta">Today &bull; 3:45 PM (On Schedule)</span>
+                </div>
+              </div>
+
+              <div class="tracking-disclaimer-strip">
+                <i data-lucide="info" class="disc-icon"></i>
+                <span>Prototype Demonstration Feed &bull; Architecture prepared for municipal fleet GPS & facility RFID integration.</span>
+              </div>
+            </div>
+
+            <!-- 7-Stage Visual Lifecycle Timeline -->
+            <div class="timeline-container">
+              <h4 class="timeline-section-title">
+                <i data-lucide="route"></i>
+                <span>Lifecycle Verification Stages</span>
+              </h4>
+
+              <div class="journey-timeline" id="journeyTimeline">
+                <!-- Stage 1 -->
+                <div class="timeline-node completed" data-stage="1">
+                  <div class="node-icon-circle">
+                    <i data-lucide="check"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 1</span>
+                    <h5 class="node-title">Waste Identified</h5>
+                    <span class="node-status-badge completed">Completed</span>
+                    <span class="node-time">Today, 2:10 PM</span>
+                    <p class="node-desc">AI vision verified PETE 1 polymer composition.</p>
+                  </div>
+                </div>
+
+                <!-- Stage 2 -->
+                <div class="timeline-node completed" data-stage="2">
+                  <div class="node-icon-circle">
+                    <i data-lucide="check"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 2</span>
+                    <h5 class="node-title">Collection Requested</h5>
+                    <span class="node-status-badge completed">Dispatched</span>
+                    <span class="node-time">Today, 2:12 PM</span>
+                    <p class="node-desc">Pickup registered in municipal routing dispatch.</p>
+                  </div>
+                </div>
+
+                <!-- Stage 3 -->
+                <div class="timeline-node completed" data-stage="3">
+                  <div class="node-icon-circle">
+                    <i data-lucide="check"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 3</span>
+                    <h5 class="node-title">Pickup Scheduled</h5>
+                    <span class="node-status-badge completed">Scheduled</span>
+                    <span class="node-time">Today, 2:30 PM</span>
+                    <p class="node-desc">Assigned to EV-Truck #04 for curbside retrieval.</p>
+                  </div>
+                </div>
+
+                <!-- Stage 4 -->
+                <div class="timeline-node active" data-stage="4">
+                  <div class="node-icon-circle pulse">
+                    <i data-lucide="truck"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 4</span>
+                    <h5 class="node-title">Collected by Vehicle</h5>
+                    <span class="node-status-badge active">In Transit</span>
+                    <span class="node-time">Today, 3:05 PM</span>
+                    <p class="node-desc">Bin emptied, barcoded, and en route to facility.</p>
+                  </div>
+                </div>
+
+                <!-- Stage 5 -->
+                <div class="timeline-node pending" data-stage="5">
+                  <div class="node-icon-circle">
+                    <i data-lucide="factory"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 5</span>
+                    <h5 class="node-title">Sorting / MRF Facility</h5>
+                    <span class="node-status-badge pending">Upcoming</span>
+                    <span class="node-time">Est. 3:45 PM</span>
+                    <p class="node-desc">Optical sorting, baling, and contaminant extraction.</p>
+                  </div>
+                </div>
+
+                <!-- Stage 6 -->
+                <div class="timeline-node pending" data-stage="6">
+                  <div class="node-icon-circle">
+                    <i data-lucide="recycle"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 6</span>
+                    <h5 class="node-title">Recycled / Recovered</h5>
+                    <span class="node-status-badge pending">Upcoming</span>
+                    <span class="node-time">Est. 5:00 PM</span>
+                    <p class="node-desc">Flaked into circular raw polymer for bottle manufacturing.</p>
+                  </div>
+                </div>
+
+                <!-- Stage 7 -->
+                <div class="timeline-node pending" data-stage="7">
+                  <div class="node-icon-circle">
+                    <i data-lucide="award"></i>
+                  </div>
+                  <div class="node-content">
+                    <span class="node-step">Stage 7</span>
+                    <h5 class="node-title">EcoPoints Unlocked</h5>
+                    <span class="node-status-badge pending">+50 EcoPoints</span>
+                    <span class="node-time">Upon Verification</span>
+                    <p class="node-desc">Points credited after facility check-in verification.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Verification Milestone Banner (Revealed when Stage 7 is reached) -->
+            <div class="verification-milestone-card" id="verificationMilestoneCard" style="display: none;">
+              <div class="verification-icon-circle">
+                <i data-lucide="check-check"></i>
+              </div>
+              <div class="verification-text-group">
+                <div class="verification-tag">DISPOSAL JOURNEY VERIFIED</div>
+                <h4 class="verification-headline">+50 EcoPoints Credited to Your EcoWallet!</h4>
+                <p class="verification-sub">
+                  Action verified by municipal partner facility check-in (Verification Hash: <code id="verificationCode">#ES-98421-PET</code>). You successfully diverted 50g CO₂ from entering the atmosphere.
+                </p>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" id="viewWalletFromJourneyBtn">
+                <span>Open EcoWallet</span>
+                <i data-lucide="arrow-right"></i>
+              </button>
+            </div>
+
+            <!-- Interactive Simulation Toolbar for Hackathon Evaluation -->
+            <div class="simulation-controls-bar">
+              <div class="sim-label-group">
+                <span class="sim-badge">INTERACTIVE PROTOTYPE</span>
+                <span class="sim-text">Step through the complete waste journey lifecycle:</span>
+              </div>
+              <div class="sim-buttons">
+                <button type="button" class="btn btn-primary btn-sm" id="advanceStageBtn">
+                  <i data-lucide="fast-forward"></i>
+                  <span id="advanceBtnText">Advance Next Stage &rarr;</span>
+                </button>
+                <button type="button" class="btn btn-outline btn-sm" id="resetStageBtn" title="Reset timeline to start">
                   <i data-lucide="rotate-ccw"></i>
-                  <span>Scan Another Item</span>
+                  <span>Reset Demo</span>
                 </button>
               </div>
             </div>
 
           </div>
         </div>
+
+        <!-- ================= TAB 2: ECOWALLET & REWARDS ================= -->
+        <div class="journey-tab-pane" id="pane-wallet" style="display: none;">
+          <div class="ecowallet-layout">
+            <!-- Left: Wallet Overview & Next Reward -->
+            <div class="wallet-main-col">
+              <!-- Next Reward Progress Card -->
+              <div class="reward-progress-card">
+                <div class="progress-card-header">
+                  <div>
+                    <span class="card-mini-title">TARGET REDEMPTION</span>
+                    <h3 class="target-reward-title">🌿 Eco Store Voucher ($15 Off)</h3>
+                    <p class="target-reward-desc">Valid for plastic-free personal care and reusable home essentials.</p>
+                  </div>
+                  <div class="points-circle-pill">
+                    <span class="pts-big" id="walletBalanceBig">250</span>
+                    <span class="pts-sub">/ 500 pts</span>
+                  </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="target-progress-track">
+                  <div class="target-progress-fill" id="targetRewardProgressFill" style="width: 50%;"></div>
+                </div>
+                <div class="target-progress-meta">
+                  <span id="targetRemainingText"><strong>250 more points</strong> needed to unlock this voucher</span>
+                  <span id="targetPercentText">50% Completed</span>
+                </div>
+
+                <div class="progress-card-footer">
+                  <button type="button" class="btn btn-secondary btn-sm" id="toggleRulesBtn">
+                    <i data-lucide="help-circle"></i>
+                    <span>How to Earn Points</span>
+                  </button>
+                  <a href="#scanner" class="btn btn-primary btn-sm">
+                    <i data-lucide="scan"></i>
+                    <span>Scan Waste for Points</span>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Transparent Point Rules Card (Collapsible) -->
+              <div class="point-rules-card" id="pointRulesCard" style="display: none;">
+                <div class="rules-card-header">
+                  <h4 class="rules-title">
+                    <i data-lucide="award"></i>
+                    <span>EcoPoints Earning System & Rules</span>
+                  </h4>
+                  <span class="rules-badge">Anti-Cheat Verified</span>
+                </div>
+                <p class="rules-subtext">
+                  Points are connected to meaningful, completed environmental actions. Points are not awarded simply for taking photos.
+                </p>
+                <div class="rules-grid">
+                  <div class="rule-item">
+                    <span class="rule-pts text-emerald">+5 pts</span>
+                    <div class="rule-info">
+                      <strong>Identify Waste</strong>
+                      <span>AI model scan with high confidence classification.</span>
+                    </div>
+                  </div>
+                  <div class="rule-item">
+                    <span class="rule-pts text-emerald">+10 pts</span>
+                    <div class="rule-info">
+                      <strong>Follow Disposal Guidance</strong>
+                      <span>Perform proper prep (rinse, crush, remove cap).</span>
+                    </div>
+                  </div>
+                  <div class="rule-item">
+                    <span class="rule-pts text-emerald">+20 pts</span>
+                    <div class="rule-info">
+                      <strong>Curbside Collection</strong>
+                      <span>Waste scanned and picked up by municipal truck.</span>
+                    </div>
+                  </div>
+                  <div class="rule-item">
+                    <span class="rule-pts text-emerald">+50 pts</span>
+                    <div class="rule-info">
+                      <strong>Verified Recycling/Recovery</strong>
+                      <span>Check-in confirmed by certified partner facility.</span>
+                    </div>
+                  </div>
+                  <div class="rule-item">
+                    <span class="rule-pts text-emerald">+50 pts</span>
+                    <div class="rule-info">
+                      <strong>Donate / Reuse an Item</strong>
+                      <span>Redirect reusable goods to a community recipient.</span>
+                    </div>
+                  </div>
+                  <div class="rule-item">
+                    <span class="rule-pts text-emerald">+25 pts</span>
+                    <div class="rule-info">
+                      <strong>Weekly Eco Streak</strong>
+                      <span>Sort correctly 5 consecutive days each week.</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rewards Catalog -->
+              <div class="rewards-catalog-section">
+                <div class="catalog-header">
+                  <h4 class="catalog-title">
+                    <i data-lucide="gift"></i>
+                    <span>Redeem Verified Rewards</span>
+                  </h4>
+                  <span class="catalog-tag">Partner Network Concept</span>
+                </div>
+
+                <div class="rewards-grid" id="rewardsGrid">
+                  <!-- Populated via JavaScript dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Right: Wallet Transaction History & Badges -->
+            <div class="wallet-side-col">
+              <!-- Eco Badges Showcase -->
+              <div class="badges-showcase-card">
+                <div class="side-card-header">
+                  <h4 class="side-card-title">
+                    <i data-lucide="shield-check"></i>
+                    <span>Earned Eco Badges</span>
+                  </h4>
+                  <span class="side-card-badge">3 / 6</span>
+                </div>
+                <div class="badges-chips-list">
+                  <div class="badge-chip unlocked" title="First waste scan completed">
+                    <span class="b-icon">🌱</span>
+                    <div class="b-info">
+                      <span class="b-name">First Scan</span>
+                      <span class="b-status">Unlocked</span>
+                    </div>
+                  </div>
+                  <div class="badge-chip unlocked" title="10 recyclable items diverted">
+                    <span class="b-icon">♻️</span>
+                    <div class="b-info">
+                      <span class="b-name">Recycling Rookie</span>
+                      <span class="b-status">Unlocked</span>
+                    </div>
+                  </div>
+                  <div class="badge-chip unlocked" title="Curbside pickup verified">
+                    <span class="b-icon">🚚</span>
+                    <div class="b-info">
+                      <span class="b-name">Responsible Collector</span>
+                      <span class="b-status">Active</span>
+                    </div>
+                  </div>
+                  <div class="badge-chip in-progress" title="3 more verified journeys to unlock">
+                    <span class="b-icon">🏭</span>
+                    <div class="b-info">
+                      <span class="b-name">Recycling Champion</span>
+                      <span class="b-status text-amber">3 Journeys Left</span>
+                    </div>
+                  </div>
+                  <div class="badge-chip locked" title="Identify items in all 4 categories">
+                    <span class="b-icon">🌍</span>
+                    <div class="b-info">
+                      <span class="b-name">Eco Explorer</span>
+                      <span class="b-status text-muted">Locked</span>
+                    </div>
+                  </div>
+                  <div class="badge-chip locked" title="Reach 1,000 EcoPoints milestone">
+                    <span class="b-icon">🏆</span>
+                    <div class="b-info">
+                      <span class="b-name">Waste Warrior</span>
+                      <span class="b-status text-muted">Locked</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Transaction History -->
+              <div class="transactions-card">
+                <div class="side-card-header">
+                  <h4 class="side-card-title">
+                    <i data-lucide="receipt"></i>
+                    <span>EcoPoints History</span>
+                  </h4>
+                  <span class="side-card-badge">Transparent Ledger</span>
+                </div>
+                <div class="transactions-list" id="transactionsList">
+                  <!-- Populated via JavaScript dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TAB 3: MY WASTE JOURNEYS HISTORY ================= -->
+        <div class="journey-tab-pane" id="pane-history" style="display: none;">
+          <div class="history-container-card">
+            <div class="history-header-row">
+              <div>
+                <h3 class="history-main-title">My Completed Waste Journeys</h3>
+                <p class="history-sub-text">Every item you have tracked from curbside disposal to verified circular recovery.</p>
+              </div>
+              <div class="history-summary-pills">
+                <span class="h-pill"><strong>18</strong> Total Items</span>
+                <span class="h-pill text-emerald"><strong>100%</strong> Verified Diversion</span>
+                <span class="h-pill text-blue"><strong>840</strong> Lifetime Points</span>
+              </div>
+            </div>
+
+            <!-- History Items Table / List -->
+            <div class="history-items-list" id="journeyHistoryList">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= TAB 4: "WHO NEEDS THIS?" DONATION & REUSE ================= -->
+        <div class="journey-tab-pane" id="pane-reuse" style="display: none;">
+          <div class="reuse-container-card">
+            <div class="reuse-header-banner">
+              <div class="reuse-badge">CIRCULAR REUSE HUB</div>
+              <h3 class="reuse-banner-title">Before You Discard, Consider Community Reuse</h3>
+              <p class="reuse-banner-desc">
+                Many household items—furniture, study desks, electronics, books, and working appliances—are far more valuable to a student, charity, or neighbor than entering the municipal waste stream.
+              </p>
+            </div>
+
+            <!-- Reusable Item Highlight Card -->
+            <div class="reusable-mock-item-card">
+              <div class="mock-item-badge">Sample Item: Study Table / Working Wooden Desk</div>
+              <p class="mock-item-quote">
+                "This item is physically intact and may be more useful to someone in your neighborhood than going to bulk trash disposal."
+              </p>
+
+              <!-- Three Core Choice Buttons -->
+              <div class="reuse-options-grid">
+                <button type="button" class="reuse-option-card active" id="btnOptDonate">
+                  <div class="opt-icon-circle green">
+                    <i data-lucide="heart-handshake"></i>
+                  </div>
+                  <h4>Donate to Community</h4>
+                  <p>Match with verified local charity, shelter, or community center.</p>
+                  <span class="opt-points-tag">+50 EcoPoints</span>
+                </button>
+
+                <button type="button" class="reuse-option-card" id="btnOptUpcycle">
+                  <div class="opt-icon-circle blue">
+                    <i data-lucide="wrench"></i>
+                  </div>
+                  <h4>Upcycle & Repurpose</h4>
+                  <p>Browse DIY refurbishing guides to give your item a second life.</p>
+                  <span class="opt-points-tag">+25 EcoPoints</span>
+                </button>
+
+                <button type="button" class="reuse-option-card" id="btnOptRecycle">
+                  <div class="opt-icon-circle amber">
+                    <i data-lucide="recycle"></i>
+                  </div>
+                  <h4>Municipal Bulk Recycling</h4>
+                  <p>Book verified municipal bulk pickup for wood fiber recovery.</p>
+                  <span class="opt-points-tag">+20 EcoPoints</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Donation Flow Breakdown -->
+            <div class="donation-workflow-card" id="donationWorkflowCard">
+              <h4 class="donation-flow-title">
+                <i data-lucide="git-merge"></i>
+                <span>Verified Community Donation Flow</span>
+              </h4>
+
+              <div class="donation-steps-row">
+                <div class="don-step">
+                  <div class="don-num">1</div>
+                  <h5>Available Recipient</h5>
+                  <p>Matched with <strong>Green Springs Youth Education Center</strong>.</p>
+                  <span class="don-status completed">Matched</span>
+                </div>
+                <div class="don-arrow">&rarr;</div>
+                <div class="don-step">
+                  <div class="don-num">2</div>
+                  <h5>Volunteer Pickup</h5>
+                  <p>Curbside volunteer pickup scheduled for <strong>Tomorrow, 10:00 AM</strong>.</p>
+                  <span class="don-status completed">Confirmed</span>
+                </div>
+                <div class="don-arrow">&rarr;</div>
+                <div class="don-step">
+                  <div class="don-num">3</div>
+                  <h5>Hub Transfer</h5>
+                  <p>Item verified at neighborhood community circular depot.</p>
+                  <span class="don-status active">In Progress</span>
+                </div>
+                <div class="don-arrow">&rarr;</div>
+                <div class="don-step">
+                  <div class="don-num">4</div>
+                  <h5>Successfully Received</h5>
+                  <p>Recipient digital receipt signed & <strong>+50 EcoPoints unlocked</strong>.</p>
+                  <span class="don-status pending">Pending Delivery</span>
+                </div>
+              </div>
+
+              <div class="donation-action-bar">
+                <button type="button" class="btn btn-primary" id="confirmDonationBtn">
+                  <i data-lucide="check-circle-2"></i>
+                  <span>Simulate Donation Verification (+50 pts)</span>
+                </button>
+                <span class="prototype-note">Prototype Concept &bull; Ready for Community Outreach API Integration</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
 
