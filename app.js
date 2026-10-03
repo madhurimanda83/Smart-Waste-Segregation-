@@ -68,7 +68,7 @@ const WASTE_ITEMS_DATABASE = {
     binColor: '#0284c7',
     binBg: '#e0f2fe',
     confidence: '98.4%',
-    image: 'https://images.unsplash.com/photo-1574974671999-24b7dfba0d53?auto=format&fit=crop&w=700&q=80',
+    image: 'assets/plastic-water-bottles.png',
     steps: [
       'Empty any residual liquids completely.',
       'Rinse lightly if containing sweetened drinks or milk.',
