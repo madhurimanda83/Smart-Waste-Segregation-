@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EcoSort — Smart Waste Segregation & AI Recycling Experience</title>
+  <meta name="description" content="EcoSort uses smart computer vision to instantly identify waste items and guide proper disposal into recyclable, organic, hazardous, and general bins. Sort Smart. Recycle Right.">
+
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ================= TOP ANNOUNCEMENT BANNER ================= -->
+  <div class="top-announcement" id="topBanner">
+    <div class="container announcement-content">
+      <span class="badge-pulse"></span>
+      <span class="announcement-text">
+        <strong>Hackathon Edition:</strong> Real-time AI waste classification & smart recycling assistant.
+      </span>
+      <a href="#scanner" class="announcement-link">Try Live Scanner &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="header" id="navbar">
+    <div class="container navbar-container">
+      <!-- Logo -->
+      <a href="#hero" class="brand-logo" aria-label="EcoSort Home">
+        <div class="logo-icon-wrapper">
+          <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="10" fill="url(#logo-grad)" />
+            <path d="M16 6L21.5 12H18.5V17H13.5V12H10.5L16 6Z" fill="#FFFFFF"/>
+            <path d="M22.5 14L25.5 19.5L20.5 22.5L21.8 19.8L17.5 17.3L19.3 14.2L23.6 16.7L22.5 14Z" fill="#A7F3D0"/>
+            <path d="M9.5 14L12.5 16.7L14.3 13.6L10.1 11.1L11.3 8.5L6.4 11.5L9.5 14Z" fill="#34D399"/>
+            <path d="M12 21H20C20 23.2 18.2 25 16 25C13.8 25 12 23.2 12 21Z" fill="#ECFDF5"/>
+            <defs>
+              <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#064E3B"/>
+                <stop offset="1" stop-color="#059669"/>
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">Eco<span>Sort</span></span>
+          <span class="logo-tag">AI ECO-TECH</span>
+        </div>
+      </a>
+
+      <!-- Desktop Nav -->
+      <nav class="desktop-nav" aria-label="Primary Navigation">
+        <a href="#hero" class="nav-link active">Home</a>
+        <a href="#scanner" class="nav-link">Scan Waste</a>
+        <a href="#categories" class="nav-link">Categories</a>
+        <a href="#how-it-works" class="nav-link">How It Works</a>
+        <a href="#impact" class="nav-link">Impact</a>
+        <a href="#guide" class="nav-link">Waste Guide</a>
+      </nav>
+
+      <!-- Nav Action -->
+      <div class="nav-actions">
+        <a href="#scanner" class="btn btn-primary btn-sm nav-scan-btn">
+          <i data-lucide="scan-line" class="btn-icon"></i>
+          <span>Scan Waste</span>
+        </a>
+        <button class="hamburger-btn" id="mobileMenuBtn" aria-label="Toggle mobile menu" aria-expanded="false">
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+          <span class="hamburger-bar"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-drawer" id="mobileDrawer">
+      <div class="mobile-drawer-inner">
+        <nav class="mobile-nav">
+          <a href="#hero" class="mobile-link">Home</a>
+          <a href="#scanner" class="mobile-link">Scan Waste</a>
+          <a href="#categories" class="mobile-link">Categories</a>
+          <a href="#how-it-works" class="mobile-link">How It Works</a>
+          <a href="#impact" class="mobile-link">Impact</a>
+          <a href="#guide" class="mobile-link">Waste Guide</a>
+        </nav>
+        <div class="mobile-drawer-cta">
+          <a href="#scanner" class="btn btn-primary btn-block">
+            <i data-lucide="scan-line"></i>
+            <span>Start Waste Scan</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main id="mainContent">
+
+    <!-- ================= 2. HERO SECTION ================= -->
+    <section class="hero-section" id="hero">
+      <div class="hero-glow-blob hero-glow-1"></div>
+      <div class="hero-glow-blob hero-glow-2"></div>
+      
+      <div class="container hero-container">
+        <!-- Hero Left Column -->
+        <div class="hero-content">
+          <div class="badge-pill hero-badge">
+            <span class="badge-dot"></span>
+            <i data-lucide="sparkles" class="badge-icon"></i>
+            <span>AI-POWERED WASTE SEGREGATION</span>
+          </div>
+
+          <h1 class="hero-title">
+            Know Your Waste.<br>
+            Make a <span class="highlight-text">Better Choice.</span>
+          </h1>
+
+          <p class="hero-description">
+            Unsure which bin it belongs to? EcoSort scans your discarded items in seconds using intelligent computer vision, providing foolproof disposal instructions and real-time environmental impact data.
+          </p>
+
+          <div class="hero-cta-group">
+            <a href="#scanner" class="btn btn-primary btn-lg pulse-hover">
+              <i data-lucide="scan" class="btn-icon"></i>
+              <span>Scan Your Waste</span>
+              <i data-lucide="arrow-right" class="btn-icon-right"></i>
+            </a>
+            <a href="#guide" class="btn btn-secondary btn-lg">
+              <i data-lucide="book-open" class="btn-icon"></i>
+              <span>Explore Waste Guide</span>
+            </a>
+          </div>
+
+          <!-- Hero Micro Stats -->
+          <div class="hero-stats-row">
+            <div class="hero-stat-card">
+              <div class="stat-number">10K<span class="stat-plus">+</span></div>
+              <div class="stat-label">Items Identified</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat-card">
+              <div class="stat-number">4</div>
+              <div class="stat-label">Waste Categories</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="hero-stat-card">
+              <div class="stat-number">95<span class="stat-percent">%</span></div>
+              <div class="stat-label">Classification Accuracy</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hero Right Column (Interactive Visual Hero Card) -->
+        <div class="hero-visual-wrapper">
+          <div class="hero-visual-glass-card">
+            <!-- Simulated Scanner Header -->
+            <div class="visual-card-header">
+              <div class="visual-header-dots">
+                <span class="v-dot red"></span>
+                <span class="v-dot yellow"></span>
+                <span class="v-dot green"></span>
+              </div>
+              <div class="visual-card-title">
+                <i data-lucide="cpu" class="mini-icon"></i>
+                <span>EcoVision Neural Classifier v2.4</span>
+              </div>
+              <div class="visual-live-tag">LIVE FEED</div>
+            </div>
+
+            <!-- Viewport Screen -->
+            <div class="visual-scanner-screen">
+              <img src="https://images.unsplash.com/photo-1574974671999-24b7dfba0d53?auto=format&fit=crop&w=700&q=80" 
+                   alt="Plastic bottle scanned by AI" 
+                   class="visual-screen-img" />
+              
+              <!-- Scanning Laser Animation -->
+              <div class="visual-laser-line"></div>
+
+              <!-- Reticle Corner Markers -->
+              <div class="reticle-corner top-left"></div>
+              <div class="reticle-corner top-right"></div>
+              <div class="reticle-corner bottom-left"></div>
+              <div class="reticle-corner bottom-right"></div>
+
+              <!-- Bounding Box -->
+              <div class="hero-bounding-box">
+                <div class="bbox-tag">
+                  <i data-lucide="check-circle-2" class="bbox-icon"></i>
+                  <span>PET Plastic Bottle (Type 1) &bull; 98.4%</span>
+                </div>
+              </div>
+
+              <!-- Floating Category Pill Badge 1 -->
+              <div class="floating-pill-badge badge-top-right">
+                <div class="pill-icon-circle blue">
+                  <i data-lucide="recycle" class="pill-icon"></i>
+                </div>
+                <div>
+                  <div class="pill-title">Blue Recycling Bin</div>
+                  <div class="pill-subtitle">Rinse & Flatten</div>
+                </div>
+              </div>
+
+              <!-- Floating Category Pill Badge 2 -->
+              <div class="floating-pill-badge badge-bottom-left">
+                <div class="pill-icon-circle green">
+                  <i data-lucide="leaf" class="pill-icon"></i>
+                </div>
+                <div>
+                  <div class="pill-title">-52g CO₂ Saved</div>
+                  <div class="pill-subtitle">Circular Loop Verified</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bottom Scanning Status Strip -->
+            <div class="visual-card-footer">
+              <div class="scanner-mini-bar">
+                <span class="pulse-indicator"></span>
+                <span class="scanner-status-text">Optical Recognition: <strong class="text-emerald">Target Verified</strong></span>
+              </div>
+              <a href="#scanner" class="mini-cta-link">Try Live &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 3. WASTE SCANNER SECTION (MAIN FEATURE) ================= -->
+    <section class="scanner-section" id="scanner">
+      <div class="container">
+        <!-- Section Header -->
+        <div class="section-header text-center">
+          <div class="section-badge">
+            <i data-lucide="scan" class="section-badge-icon"></i>
+            <span>INTERACTIVE SCANNER</span>
+          </div>
+          <h2 class="section-title">What's in your bin?</h2>
+          <p class="section-subtitle">
+            Upload a photo and let EcoSort help you decide where it belongs.
+          </p>
+        </div>
+
+        <!-- Quick Sample Selector for Instant Hackathon Testing -->
+        <div class="sample-preset-container">
+          <div class="sample-preset-label">
+            <i data-lucide="zap" class="zap-icon"></i>
+            <span>Quick Test Samples:</span>
+          </div>
+          <div class="sample-chips" id="sampleChips">
+            <button class="sample-chip" data-sample="plastic_bottle">
+              <span>🧴 Plastic Bottle</span>
+            </button>
+            <button class="sample-chip" data-sample="banana_peel">
+              <span>🍌 Banana Peel</span>
+            </button>
+            <button class="sample-chip" data-sample="battery">
+              <span>🔋 Alkaline Battery</span>
+            </button>
+            <button class="sample-chip" data-sample="coffee_cup">
+              <span>☕ Takeout Coffee Cup</span>
+            </button>
+            <button class="sample-chip" data-sample="aluminum_can">
+              <span>🥫 Soda Can</span>
+            </button>
+            <button class="sample-chip" data-sample="pizza_box">
+              <span>🍕 Greasy Pizza Box</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scanner Main Interactive Layout (Split Card) -->
+        <div class="scanner-split-card">
+          <!-- Left: Input & Drop Zone Card -->
+          <div class="scanner-input-pane">
+            <div class="pane-header">
+              <h3 class="pane-title">
+                <i data-lucide="camera" class="pane-icon"></i>
+                <span>Waste Image Input</span>
+              </h3>
+              <span class="pane-badge">AI Ready</span>
+            </div>
+
+            <!-- Drag & Drop / Preview Area -->
+            <div class="drop-zone" id="dropZone" tabindex="0" role="button" aria-label="Drop waste photo or click to upload">
+              <!-- Hidden File Input -->
+              <input type="file" id="fileInput" accept="image/*" class="file-input-hidden">
+
+              <!-- Default Empty State Content -->
+              <div class="drop-zone-idle" id="dropIdle">
+                <div class="upload-icon-wrapper">
+                  <i data-lucide="upload-cloud" class="upload-cloud-icon"></i>
+                  <div class="icon-ring"></div>
+                </div>
+                <h4 class="upload-heading">Upload Waste Image</h4>
+                <p class="upload-subtext">Drag & drop your photo here, or browse files</p>
+                <div class="upload-actions">
+                  <button type="button" class="btn btn-secondary btn-sm" id="browseBtn">
+                    <i data-lucide="folder-open"></i>
+                    <span>Browse Image</span>
+                  </button>
+                  <button type="button" class="btn btn-outline btn-sm" id="cameraBtn">
+                    <i data-lucide="camera"></i>
+                    <span>Take a Photo</span>
+                  </button>
+                </div>
+                <div class="upload-formats-hint">
+                  <i data-lucide="info" class="hint-icon"></i>
+                  <span>Supports JPG, PNG, WEBP &bull; Max 10MB</span>
+                </div>
+              </div>
+
+              <!-- Active Preview / Scan Container (Hidden by default) -->
+              <div class="drop-zone-preview" id="dropPreview">
+                <img id="previewImg" src="" alt="Waste sample preview" class="preview-img">
+                
+                <!-- Animated Laser Scanner Overlay -->
+                <div class="scanner-laser-bar" id="scannerLaser"></div>
+                <div class="scanner-grid-overlay"></div>
+
+                <!-- Live Scanning Status Indicator -->
+                <div class="scanner-analyzing-badge" id="analyzingBadge">
+                  <div class="spinner-dot"></div>
+                  <span>Analyzing item characteristics...</span>
+                </div>
+
+                <!-- Preview Controls Bar -->
+                <div class="preview-controls">
+                  <button type="button" class="btn-preview-action" id="reuploadBtn" title="Choose another image">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Replace Image</span>
+                  </button>
+                  <button type="button" class="btn-preview-action danger" id="clearBtn" title="Clear image">
+                    <i data-lucide="trash-2"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Webcam Stream Container (Hidden by default) -->
+              <div class="webcam-pane" id="webcamPane">
+                <video id="webcamVideo" autoplay playsinline muted></video>
+                <div class="webcam-overlay">
+                  <div class="webcam-target-box"></div>
+                  <p class="webcam-hint">Center the waste item inside frame</p>
+                </div>
+                <div class="webcam-actions">
+                  <button type="button" class="btn btn-primary" id="captureWebcamBtn">
+                    <i data-lucide="aperture"></i>
+                    <span>Snap Picture</span>
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="closeWebcamBtn">
+                    <i data-lucide="x"></i>
+                    <span>Cancel</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Trigger Analysis Button (When image selected) -->
+            <div class="scan-button-container">
+              <button type="button" class="btn btn-primary btn-block btn-lg" id="runScanBtn" disabled>
+                <i data-lucide="sparkles" class="btn-icon"></i>
+                <span id="runScanText">Select an Image to Scan</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Right: AI Analysis Panel -->
+          <div class="scanner-analysis-pane">
+            <div class="pane-header">
+              <h3 class="pane-title">
+                <i data-lucide="brain-circuit" class="pane-icon"></i>
+                <span>AI Analysis & Recommendation</span>
+              </h3>
+              <div class="status-indicator-chip" id="analysisStatusChip">
+                <span class="status-dot"></span>
+                <span id="analysisStatusText">Standby</span>
+              </div>
+            </div>
+
+            <!-- State 1: Idle Initial State -->
+            <div class="analysis-state-idle" id="stateIdle">
+              <div class="radar-visual-circle">
+                <div class="radar-sweep"></div>
+                <div class="radar-dot dot-1"></div>
+                <div class="radar-dot dot-2"></div>
+                <i data-lucide="scan-face" class="radar-center-icon"></i>
+              </div>
+              <h4 class="idle-title">Ready to identify your waste</h4>
+              <p class="idle-text">
+                Select one of the sample items above or upload your own photo. EcoSort will classify the material, recommend the right bin, and provide actionable prep instructions.
+              </p>
+              <div class="idle-features">
+                <div class="idle-feat-item">
+                  <i data-lucide="check" class="feat-check"></i>
+                  <span>Material Composition Analysis</span>
+                </div>
+                <div class="idle-feat-item">
+                  <i data-lucide="check" class="feat-check"></i>
+                  <span>Municipal Bin Color Mapping</span>
+                </div>
+                <div class="idle-feat-item">
+                  <i data-lucide="check" class="feat-check"></i>
+                  <span>Carbon & Landfill Offset Metrics</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- State 2: Processing / Scanning State -->
+            <div class="analysis-state-loading" id="stateLoading">
+              <div class="ai-processing-graphic">
+                <div class="pulse-ring ring-1"></div>
+                <div class="pulse-ring ring-2"></div>
+                <div class="ai-core-icon">
+                  <i data-lucide="cpu" class="ai-spinning-icon"></i>
+                </div>
+              </div>
+              <h4 class="loading-title">Neural Classifier Running...</h4>
+              <p class="loading-step" id="loadingStepText">Segmenting image contours & surface texture...</p>
+
+              <!-- Progress Bar -->
+              <div class="progress-bar-wrapper">
+                <div class="progress-bar-fill" id="scanProgressBar"></div>
+              </div>
+              <div class="progress-stats">
+                <span>Model: EcoVision-v2.4-lite</span>
+                <span id="scanProgressPercent">0%</span>
+              </div>
+            </div>
+
+            <!-- State 3: Result Card -->
+            <div class="analysis-state-result" id="stateResult">
+              <!-- Top Result Badge Strip -->
+              <div class="result-top-bar">
+                <div class="result-category-badge" id="resCategoryBadge">
+                  <i data-lucide="recycle" id="resCategoryIcon"></i>
+                  <span id="resCategoryName">Recyclable</span>
+                </div>
+                <div class="confidence-pill" id="resConfidence">
+                  <i data-lucide="shield-check"></i>
+                  <span>96.8% Confidence</span>
+                </div>
+              </div>
+
+              <!-- Main Detected Item Header -->
+              <div class="result-header">
+                <div class="result-title-group">
+                  <span class="detected-label">Detected Item</span>
+                  <h3 class="detected-item-name" id="resItemName">Plastic Water Bottle</h3>
+                  <p class="detected-material" id="resMaterial">Polyethylene Terephthalate (PETE 1)</p>
+                </div>
+              </div>
+
+              <!-- Bin Destination Highlight Card -->
+              <div class="bin-destination-card" id="resBinCard">
+                <div class="bin-graphic-wrapper" id="resBinGraphic">
+                  <i data-lucide="trash" class="bin-icon-large"></i>
+                </div>
+                <div class="bin-info-details">
+                  <span class="bin-target-label">Recommended Destination:</span>
+                  <h4 class="bin-name" id="resBinName">Blue Recycling Bin</h4>
+                  <p class="bin-rule" id="resBinRule">For clean plastics, cans, paper & cardboard</p>
+                </div>
+              </div>
+
+              <!-- Instructions Checklist -->
+              <div class="instructions-section">
+                <h5 class="section-mini-heading">
+                  <i data-lucide="list-checks"></i>
+                  <span>Disposal Protocol:</span>
+                </h5>
+                <ul class="steps-checklist" id="resStepsList">
+                  <!-- Dynamically inserted steps -->
+                </ul>
+              </div>
+
+              <!-- Environmental Impact Metric Pill -->
+              <div class="impact-metric-pill" id="resImpactBox">
+                <div class="impact-icon-circle">
+                  <i data-lucide="leaf"></i>
+                </div>
+                <div class="impact-text-group">
+                  <span class="impact-small-label">Environmental Impact</span>
+                  <p class="impact-headline" id="resImpactHeadline">Saves 0.08 kWh energy & prevents 50g CO₂</p>
+                </div>
+              </div>
+
+              <!-- Reset / Scan Another Button -->
+              <div class="result-actions">
+                <button type="button" class="btn btn-outline btn-block" id="scanAgainBtn">
+                  <i data-lucide="rotate-ccw"></i>
+                  <span>Scan Another Item</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 4. WASTE CATEGORIES ================= -->
+    <section class="categories-section" id="categories">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">
+            <i data-lucide="layers" class="section-badge-icon"></i>
+            <span>CLASSIFICATION SYSTEM</span>
+          </div>
+          <h2 class="section-title">The Four Waste Streams</h2>
+          <p class="section-subtitle">
+            Segregating at the source prevents cross-contamination and maximizes landfill diversion.
+          </p>
+        </div>
+
+        <div class="categories-grid">
+          <!-- 1. Recyclable -->
+          <div class="category-card cat-recyclable">
+            <div class="cat-accent-strip"></div>
+            <div class="cat-card-header">
+              <div class="cat-icon-box">
+                <i data-lucide="recycle" class="cat-icon"></i>
+              </div>
+              <div class="cat-bin-pill">
+                <span class="bin-color-dot blue"></span>
+                <span>Blue Bin</span>
+              </div>
+            </div>
+            <h3 class="cat-title">Recyclable</h3>
+            <p class="cat-desc">
+              Materials that can be reprocessed into fresh goods, conserving virgin raw resources and energy.
+            </p>
+            <div class="cat-examples">
+              <span class="example-label">Common items:</span>
+              <div class="tags-wrapper">
+                <span class="item-tag">Plastic Bottles</span>
+                <span class="item-tag">Aluminum Cans</span>
+                <span class="item-tag">Cardboard</span>
+                <span class="item-tag">Glass Jars</span>
+                <span class="item-tag">Magazines</span>
+              </div>
+            </div>
+            <div class="cat-tip">
+              <i data-lucide="sparkles" class="tip-icon"></i>
+              <span>Tip: Must be empty, rinsed & dry before binning.</span>
+            </div>
+          </div>
+
+          <!-- 2. Organic -->
+          <div class="category-card cat-organic">
+            <div class="cat-accent-strip"></div>
+            <div class="cat-card-header">
+              <div class="cat-icon-box">
+                <i data-lucide="apple" class="cat-icon"></i>
+              </div>
+              <div class="cat-bin-pill">
+                <span class="bin-color-dot green"></span>
+                <span>Green Bin</span>
+              </div>
+            </div>
+            <h3 class="cat-title">Organic</h3>
+            <p class="cat-desc">
+              Biodegradable plant and food waste suited for industrial composting or home vermiculture.
+            </p>
+            <div class="cat-examples">
+              <span class="example-label">Common items:</span>
+              <div class="tags-wrapper">
+                <span class="item-tag">Fruit Peels</span>
+                <span class="item-tag">Coffee Grounds</span>
+                <span class="item-tag">Eggshells</span>
+                <span class="item-tag">Garden Leaves</span>
+                <span class="item-tag">Food Leftovers</span>
+              </div>
+            </div>
+            <div class="cat-tip">
+              <i data-lucide="sparkles" class="tip-icon"></i>
+              <span>Tip: Never wrap organic waste in non-compostable plastic bags.</span>
+            </div>
+          </div>
+
+          <!-- 3. Hazardous -->
+          <div class="category-card cat-hazardous">
+            <div class="cat-accent-strip"></div>
+            <div class="cat-card-header">
+              <div class="cat-icon-box">
+                <i data-lucide="alert-triangle" class="cat-icon"></i>
+              </div>
+              <div class="cat-bin-pill">
+                <span class="bin-color-dot red"></span>
+                <span>Special / Red Bin</span>
+              </div>
+            </div>
+            <h3 class="cat-title">Hazardous</h3>
+            <p class="cat-desc">
+              Toxic, corrosive, or flammable materials posing severe threats to human health and groundwater.
+            </p>
+            <div class="cat-examples">
+              <span class="example-label">Common items:</span>
+              <div class="tags-wrapper">
+                <span class="item-tag">Lithium Batteries</span>
+                <span class="item-tag">Paint & Thinner</span>
+                <span class="item-tag">Light Bulbs</span>
+                <span class="item-tag">Pesticides</span>
+                <span class="item-tag">Electronics (E-Waste)</span>
+              </div>
+            </div>
+            <div class="cat-tip">
+              <i data-lucide="alert-circle" class="tip-icon"></i>
+              <span>Tip: Take to certified municipal e-waste drops. Never put in general trash.</span>
+            </div>
+          </div>
+
+          <!-- 4. General Waste -->
+          <div class="category-card cat-general">
+            <div class="cat-accent-strip"></div>
+            <div class="cat-card-header">
+              <div class="cat-icon-box">
+                <i data-lucide="trash-2" class="cat-icon"></i>
+              </div>
+              <div class="cat-bin-pill">
+                <span class="bin-color-dot dark"></span>
+                <span>Black / Grey Bin</span>
+              </div>
+            </div>
+            <h3 class="cat-title">General Waste</h3>
+            <p class="cat-desc">
+              Residual non-recyclable, non-compostable trash destined for waste-to-energy incineration or landfill.
+            </p>
+            <div class="cat-examples">
+              <span class="example-label">Common items:</span>
+              <div class="tags-wrapper">
+                <span class="item-tag">Plastic Cutlery</span>
+                <span class="item-tag">Chip Packets</span>
+                <span class="item-tag">Greasy Wax Paper</span>
+                <span class="item-tag">Sanitary Items</span>
+                <span class="item-tag">Broken Ceramics</span>
+              </div>
+            </div>
+            <div class="cat-tip">
+              <i data-lucide="sparkles" class="tip-icon"></i>
+              <span>Tip: Aim to reduce single-use multi-layer packaging whenever possible.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 5. HOW IT WORKS ================= -->
+    <section class="how-section" id="how-it-works">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">
+            <i data-lucide="workflow" class="section-badge-icon"></i>
+            <span>SEAMLESS WORKFLOW</span>
+          </div>
+          <h2 class="section-title">How EcoSort Works</h2>
+          <p class="section-subtitle">
+            Three simple steps to eliminate segregation guesswork and protect our ecosystem.
+          </p>
+        </div>
+
+        <div class="workflow-steps-wrapper">
+          <div class="workflow-line-connector"></div>
+
+          <!-- Step 1 -->
+          <div class="workflow-step-card">
+            <div class="step-num-badge">01</div>
+            <div class="step-icon-bubble">
+              <i data-lucide="camera" class="step-icon"></i>
+            </div>
+            <h3 class="step-title">Capture</h3>
+            <p class="step-description">
+              Snap a live photo with your mobile or laptop camera, or simply drag and drop any image into the scanner.
+            </p>
+            <div class="step-feature-tag">Instant Upload</div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="workflow-step-card">
+            <div class="step-num-badge">02</div>
+            <div class="step-icon-bubble">
+              <i data-lucide="brain-circuit" class="step-icon"></i>
+            </div>
+            <h3 class="step-title">Identify</h3>
+            <p class="step-description">
+              Our neural network detects item contours, polymers, organic fibers, and contaminants with 95%+ precision.
+            </p>
+            <div class="step-feature-tag">Computer Vision</div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="workflow-step-card">
+            <div class="step-num-badge">03</div>
+            <div class="step-icon-bubble">
+              <i data-lucide="recycle" class="step-icon"></i>
+            </div>
+            <h3 class="step-title">Dispose</h3>
+            <p class="step-description">
+              Receive the precise color-coded bin recommendation, step-by-step cleaning instructions, and saved carbon metrics.
+            </p>
+            <div class="step-feature-tag">Zero Contamination</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 6. ENVIRONMENTAL IMPACT SECTION (DARK THEME) ================= -->
+    <section class="impact-section" id="impact">
+      <div class="impact-ambient-mesh"></div>
+      <div class="container">
+        <div class="impact-header-grid">
+          <div>
+            <div class="badge-pill dark-badge">
+              <i data-lucide="globe-2" class="badge-icon"></i>
+              <span>REAL-TIME MEASURED SUSTAINABILITY</span>
+            </div>
+            <h2 class="impact-main-title">Small actions.<br><span class="text-glow">Bigger impact.</span></h2>
+            <p class="impact-description">
+              Proper segregation at the moment of disposal is the single most effective barrier against oceanic microplastics and methane-generating open landfills.
+            </p>
+          </div>
+
+          <!-- Interactive Personal Impact Calculator -->
+          <div class="impact-calculator-card">
+            <div class="calc-header">
+              <div class="calc-title">
+                <i data-lucide="calculator" class="calc-icon"></i>
+                <span>Your Community Impact Estimator</span>
+              </div>
+              <span class="calc-badge">Dynamic</span>
+            </div>
+            <div class="calc-body">
+              <label for="itemsSlider" class="calc-slider-label">
+                <span>Items segregated correctly per week:</span>
+                <strong id="sliderValueDisplay" class="slider-val">25 items</strong>
+              </label>
+              <input type="range" id="itemsSlider" min="5" max="100" value="25" step="5" class="calc-slider">
+
+              <div class="calc-results-grid">
+                <div class="calc-stat-box">
+                  <span class="calc-stat-number" id="calcCo2">12.5 kg</span>
+                  <span class="calc-stat-desc">CO₂ Emissions Avoided / mo</span>
+                </div>
+                <div class="calc-stat-box">
+                  <span class="calc-stat-number" id="calcLandfill">18.2 kg</span>
+                  <span class="calc-stat-desc">Landfill Mass Diverted / mo</span>
+                </div>
+                <div class="calc-stat-box">
+                  <span class="calc-stat-number" id="calcTrees">1.4</span>
+                  <span class="calc-stat-desc">Tree Seedling Equivalents</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Impact Live KPI Grid with Animated SVG Progress Rings -->
+        <div class="impact-kpi-grid">
+          <!-- Card 1 -->
+          <div class="kpi-card">
+            <div class="kpi-ring-wrapper">
+              <svg class="progress-ring" width="100" height="100">
+                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="ring-progress" stroke="#10b981" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="35" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50"/>
+              </svg>
+              <span class="ring-text">86%</span>
+            </div>
+            <div class="kpi-info">
+              <div class="kpi-value">148,200+</div>
+              <div class="kpi-label">Items Correctly Classified</div>
+              <div class="kpi-sub">Across 18 participating pilot campuses</div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="kpi-card">
+            <div class="kpi-ring-wrapper">
+              <svg class="progress-ring" width="100" height="100">
+                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="ring-progress" stroke="#34d399" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="60" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50"/>
+              </svg>
+              <span class="ring-text">76%</span>
+            </div>
+            <div class="kpi-info">
+              <div class="kpi-value">42.8 Tons</div>
+              <div class="kpi-label">Waste Diverted from Landfills</div>
+              <div class="kpi-sub">Directly routed to material recyclers</div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="kpi-card">
+            <div class="kpi-ring-wrapper">
+              <svg class="progress-ring" width="100" height="100">
+                <circle class="ring-bg" stroke="rgba(255,255,255,0.1)" stroke-width="8" fill="transparent" r="40" cx="50" cy="50"/>
+                <circle class="ring-progress" stroke="#06b6d4" stroke-width="8" stroke-dasharray="251.2" stroke-dashoffset="20" stroke-linecap="round" fill="transparent" r="40" cx="50" cy="50"/>
+              </svg>
+              <span class="ring-text">92%</span>
+            </div>
+            <div class="kpi-info">
+              <div class="kpi-value">91.4%</div>
+              <div class="kpi-label">Recycling Stream Purity</div>
+              <div class="kpi-sub">Reduced batch contamination penalties</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 7. WASTE GUIDE SECTION ================= -->
+    <section class="guide-section" id="guide">
+      <div class="container">
+        <div class="section-header text-center">
+          <div class="section-badge">
+            <i data-lucide="book-marked" class="section-badge-icon"></i>
+            <span>ENCYCLOPEDIA</span>
+          </div>
+          <h2 class="section-title">Everyday Waste Disposal Guide</h2>
+          <p class="section-subtitle">
+            Browse commonly discarded items to find municipal disposal guidelines, preparation tips, and decomposition timeframes.
+          </p>
+        </div>
+
+        <!-- Filter & Search Controls -->
+        <div class="guide-controls-wrapper">
+          <!-- Search input -->
+          <div class="guide-search-box">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="guideSearchInput" placeholder="Search items e.g., plastic bottle, battery, paper, pizza box..." aria-label="Search waste items">
+            <button type="button" class="search-clear-btn" id="searchClearBtn" aria-label="Clear search">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+
+          <!-- Category Filter Pills -->
+          <div class="guide-filter-pills" id="guideFilterPills">
+            <button class="filter-pill active" data-filter="all">All Items (<span id="totalItemsCount">8</span>)</button>
+            <button class="filter-pill" data-filter="recyclable">Recyclable</button>
+            <button class="filter-pill" data-filter="organic">Organic</button>
+            <button class="filter-pill" data-filter="hazardous">Hazardous</button>
+            <button class="filter-pill" data-filter="general">General Waste</button>
+          </div>
+        </div>
+
+        <!-- Items Grid Container -->
+        <div class="guide-items-grid" id="guideGrid">
+          <!-- Items populated via JavaScript for dynamic filtering & rich cards -->
+        </div>
+
+        <!-- Empty state when no search results -->
+        <div class="guide-empty-state" id="guideEmptyState" style="display: none;">
+          <div class="empty-icon-circle">
+            <i data-lucide="search-x"></i>
+          </div>
+          <h4>No matching waste items found</h4>
+          <p>Try searching with a different keyword or browse through our categories above.</p>
+          <button type="button" class="btn btn-secondary btn-sm" id="resetGuideSearchBtn">Reset Search Filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ITEM DETAIL MODAL ================= -->
+    <div class="modal-backdrop" id="itemDetailModal" role="dialog" aria-modal="true" aria-hidden="true">
+      <div class="modal-window">
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">
+          <i data-lucide="x"></i>
+        </button>
+        <div class="modal-content" id="modalBody">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= 8. FOOTER ================= -->
+  <footer class="footer">
+    <div class="container footer-container">
+      <div class="footer-top-grid">
+        <!-- Col 1: Branding -->
+        <div class="footer-brand-col">
+          <a href="#hero" class="brand-logo footer-logo">
+            <div class="logo-icon-wrapper">
+              <svg class="logo-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="10" fill="url(#footer-logo-grad)" />
+                <path d="M16 6L21.5 12H18.5V17H13.5V12H10.5L16 6Z" fill="#FFFFFF"/>
+                <path d="M22.5 14L25.5 19.5L20.5 22.5L21.8 19.8L17.5 17.3L19.3 14.2L23.6 16.7L22.5 14Z" fill="#A7F3D0"/>
+                <path d="M9.5 14L12.5 16.7L14.3 13.6L10.1 11.1L11.3 8.5L6.4 11.5L9.5 14Z" fill="#34D399"/>
+                <path d="M12 21H20C20 23.2 18.2 25 16 25C13.8 25 12 23.2 12 21Z" fill="#ECFDF5"/>
+                <defs>
+                  <linearGradient id="footer-logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                    <stop stop-color="#064E3B"/>
+                    <stop offset="1" stop-color="#059669"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+            <div class="logo-text">
+              <span class="logo-title text-white">Eco<span>Sort</span></span>
+            </div>
+          </a>
+          <p class="footer-tagline">"Sort Smart. Recycle Right."</p>
+          <p class="footer-bio">
+            Empowering households and campuses to turn daily waste disposal into verified circular resource recovery.
+          </p>
+          <div class="hackathon-tag-pill">
+            <i data-lucide="award" class="tag-icon"></i>
+            <span>Built for 24-Hour Sustainability Hackathon 2026</span>
+          </div>
+        </div>
+
+        <!-- Col 2: Quick Navigation -->
+        <div class="footer-nav-col">
+          <h4 class="footer-nav-title">Navigation</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#hero">Home</a></li>
+            <li><a href="#scanner">AI Waste Scanner</a></li>
+            <li><a href="#categories">Four Waste Streams</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#impact">Sustainability Impact</a></li>
+            <li><a href="#guide">Disposal Guide</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 3: Waste Categories -->
+        <div class="footer-nav-col">
+          <h4 class="footer-nav-title">Waste Categories</h4>
+          <ul class="footer-nav-list">
+            <li><a href="#guide" onclick="filterGuideFromFooter('recyclable')">Recyclable (Blue Bin)</a></li>
+            <li><a href="#guide" onclick="filterGuideFromFooter('organic')">Organic Waste (Green Bin)</a></li>
+            <li><a href="#guide" onclick="filterGuideFromFooter('hazardous')">Hazardous & E-Waste</a></li>
+            <li><a href="#guide" onclick="filterGuideFromFooter('general')">General Residual Waste</a></li>
+          </ul>
+        </div>
+
+        <!-- Col 4: Hackathon Project Info -->
+        <div class="footer-nav-col">
+          <h4 class="footer-nav-title">Project Vision</h4>
+          <p class="footer-vision-text">
+            Designed as a zero-friction frontend prototype addressing municipal contamination penalties and citizen disposal confusion.
+          </p>
+          <div class="tech-stack-badges">
+            <span class="tech-badge">HTML5 Semantic</span>
+            <span class="tech-badge">Vanilla CSS</span>
+            <span class="tech-badge">Vanilla JS</span>
+            <span class="tech-badge">Responsive</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Bar -->
+      <div class="footer-bottom-bar">
+        <div class="copyright-text">
+          &copy; 2026 EcoSort Project. Open source frontend showcase for Sustainability & Clean Cities.
+        </div>
+        <div class="footer-social-links">
+          <span class="badge-status-dot"></span>
+          <span>Frontend Prototype v1.0 &bull; 100% Hackathon Ready</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
