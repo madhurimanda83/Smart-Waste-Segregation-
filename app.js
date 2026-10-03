@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initScanner();
   initWasteGuide();
-  initRecyclingHub();
   initCollectionSchedule();
   initScrollSpy();
 });
@@ -909,49 +908,7 @@ function initWasteGuide() {
 }
 
 /* ==========================================================================
-   5. RECYCLING HUB LOGIC
-   ========================================================================== */
-function initRecyclingHub() {
-  const tabBtns = document.querySelectorAll('.hub-tab-btn');
-  const tabContents = {
-    items: document.getElementById('hubTabItems'),
-    prep: document.getElementById('hubTabPrep'),
-    opportunities: document.getElementById('hubTabOpportunities')
-  };
-
-  tabBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetTab = btn.getAttribute('data-hub-tab');
-
-      // Update button active state
-      tabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      // Update content visibility
-      Object.keys(tabContents).forEach(tabKey => {
-        if (tabContents[tabKey]) {
-          tabContents[tabKey].classList.toggle('active', tabKey === targetTab);
-        }
-      });
-
-      if (window.lucide) {
-        window.lucide.createIcons();
-      }
-    });
-  });
-
-  // Center locator buttons on Opportunities tab
-  const findCenterBtns = document.querySelectorAll('.find-center-btn');
-  findCenterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const centerType = btn.getAttribute('data-center-type') || 'Recycling Center';
-      showToast(`Locating nearby ${centerType} stations in your municipal zone...`);
-    });
-  });
-}
-
-/* ==========================================================================
-   6. COLLECTION SCHEDULE LOGIC
+   5. COLLECTION SCHEDULE LOGIC
    ========================================================================== */
 const SCHEDULE_DATA = {
   'zone-a': [
