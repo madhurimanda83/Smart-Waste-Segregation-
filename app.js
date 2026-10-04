@@ -15,7 +15,367 @@ document.addEventListener('DOMContentLoaded', () => {
   initWasteGuide();
   initCollectionSchedule();
   initScrollSpy();
+  initAuthentication();
 });
+
+function getApiBaseUrl() {
+  if (window.location.port === '3000' || window.location.pathname.startsWith('/api')) {
+    return '';
+  }
+  return 'http://localhost:3000';
+}
+
+function initAuthentication() {
+  const overlay = document.getElementById('authOverlay');
+  const form = document.getElementById('authForm');
+  const nameField = document.getElementById('authNameField');
+  const emailInput = document.getElementById('authEmail');
+  const passwordInput = document.getElementById('authPassword');
+  const error = document.getElementById('authError');
+  const pwToggleBtn = document.getElementById('authTogglePw');
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userDropdown = document.getElementById('userDropdown');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
+
+  let mode = 'login';
+
+  // Toggle password visibility
+  if (pwToggleBtn && passwordInput) {
+    pwToggleBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      const icon = pwToggleBtn.querySelector('i');
+      if (icon) {
+        icon.setAttribute('data-lucide', isPassword ? 'eye-off' : 'eye');
+        if (window.lucide) window.lucide.createIcons();
+      }
+    });
+  }
+
+  // Clear errors when typing
+  [emailInput, passwordInput, document.getElementById('authName')].forEach(input => {
+    if (input) {
+      input.addEventListener('input', () => {
+        error.hidden = true;
+      });
+    }
+  });
+
+  const setMode = nextMode => {
+    mode = nextMode;
+    const signup = mode === 'signup';
+    document.getElementById('authTitle').textContent = signup ? 'Create your account' : 'Welcome back';
+    document.getElementById('authSubtitle').textContent = signup ? 'Join EcoSort and make your impact count.' : 'Sign in to continue making a difference.';
+    document.getElementById('authSubmit').innerHTML = `${signup ? 'Create account' : 'Log in'} <i data-lucide="arrow-right"></i>`;
+    document.getElementById('authSwitchPrompt').textContent = signup ? 'Already part of EcoSort?' : 'New to EcoSort?';
+    document.getElementById('authSwitch').textContent = signup ? 'Log in' : 'Create an account';
+    document.getElementById('authPasswordHint').textContent = 'At least 6 characters';
+    nameField.hidden = !signup;
+    document.getElementById('authName').required = signup;
+    passwordInput.autocomplete = signup ? 'new-password' : 'current-password';
+    error.hidden = true;
+    if (window.lucide) window.lucide.createIcons();
+  };
+
+  // Open modal buttons
+  document.querySelectorAll('.auth-open-btn').forEach(button => button.addEventListener('click', () => {
+    setMode(button.dataset.authMode || 'login');
+    overlay.hidden = false;
+    document.body.classList.add('auth-open');
+
+    // Close mobile drawer if open
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    if (mobileDrawer && mobileDrawer.classList.contains('open')) {
+      mobileDrawer.classList.remove('open');
+      if (mobileMenuBtn) {
+        mobileMenuBtn.classList.remove('active');
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+    }
+
+    setTimeout(() => {
+      (mode === 'signup' ? document.getElementById('authName') : emailInput).focus();
+    }, 50);
+  }));
+
+  // Close modal buttons
+  const closeBtn = document.getElementById('authClose');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      overlay.hidden = true;
+      document.body.classList.remove('auth-open');
+    });
+  }
+  overlay.addEventListener('click', event => {
+    if (event.target === overlay) {
+      overlay.hidden = true;
+      document.body.classList.remove('auth-open');
+    }
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && !overlay.hidden) {
+      overlay.hidden = true;
+      document.body.classList.remove('auth-open');
+    }
+  });
+  document.getElementById('authSwitch').addEventListener('click', () => setMode(mode === 'signup' ? 'login' : 'signup'));
+
+  // User Dropdown toggling
+  if (userMenuBtn && userDropdown) {
+    userMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isVisible = userDropdown.style.display === 'block';
+      userDropdown.style.display = isVisible ? 'none' : 'block';
+      userMenuBtn.setAttribute('aria-expanded', isVisible ? 'false' : 'true');
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!userDropdown.contains(e.target) && !userMenuBtn.contains(e.target)) {
+        userDropdown.style.display = 'none';
+        userMenuBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
+  // Update Auth UI based on user object or null
+  function updateAuthUI(user) {
+    const guestNav = document.getElementById('authGuestNav');
+    const userNav = document.getElementById('authUserNav');
+    const mobileGuest = document.getElementById('mobileGuestNav');
+    const mobileUser = document.getElementById('mobileUserCard');
+
+    if (user) {
+      if (guestNav) guestNav.style.display = 'none';
+      if (userNav) userNav.style.display = 'flex';
+      if (mobileGuest) mobileGuest.style.display = 'none';
+      if (mobileUser) mobileUser.style.display = 'flex';
+
+      const fullName = user.fullName || 'User';
+      const firstName = fullName.split(' ')[0];
+      const initials = fullName
+        .split(' ')
+        .filter(Boolean)
+        .map(n => n[0])
+        .slice(0, 2)
+        .join('')
+        .toUpperCase() || 'U';
+
+      const points = user.ecoPoints !== undefined ? user.ecoPoints : 0;
+      const streak = user.currentStreak || 1;
+
+      // Desktop Nav elements
+      const navAvatar = document.getElementById('navUserAvatar');
+      const navName = document.getElementById('navUserName');
+      const dropAvatar = document.getElementById('dropUserAvatar');
+      const dropName = document.getElementById('dropUserName');
+      const dropEmail = document.getElementById('dropUserEmail');
+      const dropPoints = document.getElementById('dropUserPoints');
+      const dropStreak = document.getElementById('dropUserStreak');
+
+      if (navAvatar) navAvatar.textContent = initials;
+      if (navName) navName.textContent = firstName;
+      if (dropAvatar) dropAvatar.textContent = initials;
+      if (dropName) dropName.textContent = fullName;
+      if (dropEmail) dropEmail.textContent = user.email || 'EcoSort Member';
+      if (dropPoints) dropPoints.textContent = `${points} pts`;
+      if (dropStreak) dropStreak.textContent = `${streak} Day${streak > 1 ? 's' : ''}`;
+
+      // Mobile Drawer elements
+      const mobileAvatar = document.getElementById('mobileUserAvatar');
+      const mobileName = document.getElementById('mobileUserName');
+      const mobileEmail = document.getElementById('mobileUserEmail');
+      const mobilePoints = document.getElementById('mobileUserPoints');
+      const mobileStreak = document.getElementById('mobileUserStreak');
+
+      if (mobileAvatar) mobileAvatar.textContent = initials;
+      if (mobileName) mobileName.textContent = fullName;
+      if (mobileEmail) mobileEmail.textContent = user.email || 'EcoSort Member';
+      if (mobilePoints) mobilePoints.textContent = points;
+      if (mobileStreak) mobileStreak.textContent = streak;
+
+      // Sync points across wallet
+      if (window.syncEcoPointsFromAuth) {
+        window.syncEcoPointsFromAuth(points);
+      } else {
+        const navEcoPoints = document.getElementById('navEcoPoints');
+        if (navEcoPoints) navEcoPoints.textContent = points;
+      }
+    } else {
+      if (guestNav) guestNav.style.display = 'flex';
+      if (userNav) userNav.style.display = 'none';
+      if (mobileGuest) mobileGuest.style.display = 'flex';
+      if (mobileUser) mobileUser.style.display = 'none';
+      if (userDropdown) userDropdown.style.display = 'none';
+
+      if (window.syncEcoPointsFromAuth) {
+        window.syncEcoPointsFromAuth(0);
+      } else {
+        const navEcoPoints = document.getElementById('navEcoPoints');
+        if (navEcoPoints) navEcoPoints.textContent = '0';
+      }
+    }
+
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  // Handle Logout
+  async function performLogout() {
+    const token = localStorage.getItem('ecosortToken');
+    try {
+      if (token) {
+        await fetch(`${getApiBaseUrl()}/api/auth/logout`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        }).catch(() => {});
+      }
+    } catch {}
+
+    localStorage.removeItem('ecosortToken');
+    localStorage.removeItem('ecosortUser');
+    updateAuthUI(null);
+    showToast('You have been logged out.');
+  }
+
+  if (logoutBtn) logoutBtn.addEventListener('click', performLogout);
+  if (mobileLogoutBtn) mobileLogoutBtn.addEventListener('click', performLogout);
+
+  // Restore authenticated session on page load
+  async function restoreSession() {
+    const token = localStorage.getItem('ecosortToken');
+    if (!token) {
+      updateAuthUI(null);
+      return;
+    }
+
+    // Temporary optimistic render from cached user
+    try {
+      const cached = localStorage.getItem('ecosortUser');
+      if (cached) {
+        updateAuthUI(JSON.parse(cached));
+      }
+    } catch {}
+
+    // Verify session with real server database
+    try {
+      const res = await fetch(`${getApiBaseUrl()}/api/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Session expired');
+      }
+
+      const data = await res.json();
+      if (data.success && data.user) {
+        localStorage.setItem('ecosortUser', JSON.stringify(data.user));
+        updateAuthUI(data.user);
+      } else {
+        throw new Error('Invalid user');
+      }
+    } catch {
+      localStorage.removeItem('ecosortToken');
+      localStorage.removeItem('ecosortUser');
+      updateAuthUI(null);
+    }
+  }
+
+  // Expose global methods
+  window.getEcoSortAuthToken = () => localStorage.getItem('ecosortToken');
+  window.getEcoSortUser = () => {
+    try {
+      return JSON.parse(localStorage.getItem('ecosortUser'));
+    } catch {
+      return null;
+    }
+  };
+  window.updateEcoSortUser = (updates) => {
+    const current = window.getEcoSortUser() || {};
+    const updated = { ...current, ...updates };
+    localStorage.setItem('ecosortUser', JSON.stringify(updated));
+    updateAuthUI(updated);
+  };
+
+  // Form Submission (Login / Register)
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    error.hidden = true;
+    const email = emailInput.value.trim();
+    const password = passwordInput.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      error.textContent = 'Please enter a valid email address.';
+      error.hidden = false;
+      emailInput.focus();
+      return;
+    }
+    if (password.length < 6) {
+      error.textContent = 'Your password must be at least 6 characters.';
+      error.hidden = false;
+      passwordInput.focus();
+      return;
+    }
+
+    const nameInput = document.getElementById('authName');
+    if (mode === 'signup' && (!nameInput.value || !nameInput.value.trim())) {
+      error.textContent = 'Please enter your full name.';
+      error.hidden = false;
+      nameInput.focus();
+      return;
+    }
+
+    const submit = document.getElementById('authSubmit');
+    submit.disabled = true;
+    submit.innerHTML = `${mode === 'signup' ? 'Creating account' : 'Signing in'}… <i data-lucide="loader-2" class="spin"></i>`;
+    if (window.lucide) window.lucide.createIcons();
+
+    try {
+      const payload = { email, password };
+      if (mode === 'signup') {
+        payload.fullName = nameInput.value.trim();
+      }
+
+      const endpoint = mode === 'signup' ? '/api/auth/register' : '/api/auth/login';
+      const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || 'Authentication failed. Please check your credentials.');
+      }
+
+      localStorage.setItem('ecosortToken', result.token);
+      localStorage.setItem('ecosortUser', JSON.stringify(result.user));
+
+      updateAuthUI(result.user);
+
+      overlay.hidden = true;
+      document.body.classList.remove('auth-open');
+
+      showToast(mode === 'signup' 
+        ? `Welcome to EcoSort, ${result.user.fullName || 'Recycler'}! Your account is ready.` 
+        : `Welcome back, ${result.user.fullName || 'Recycler'}!`);
+
+      form.reset();
+    } catch (requestError) {
+      error.textContent = requestError.message || 'Unable to connect to EcoSort server. Please try again.';
+      error.hidden = false;
+    } finally {
+      submit.disabled = false;
+      setMode(mode);
+    }
+  });
+
+  // Run session restoration
+  restoreSession();
+}
 
 /* ==========================================================================
    1. NAVIGATION & MOBILE DRAWER
@@ -396,7 +756,7 @@ function initScanner() {
 
   async function checkBackendStatus() {
     try {
-      const res = await fetch('/api/status');
+      const res = await fetch(`${getApiBaseUrl()}/api/status`);
       if (res.ok) {
         const info = await res.json();
         if (apiStatusBadge) {
@@ -641,12 +1001,16 @@ function initScanner() {
     }, 70);
 
     try {
-      // POST to backend API
-      const response = await fetch('/api/classify', {
+      // POST to backend API (with optional auth bearer token if logged in)
+      const headers = { 'Content-Type': 'application/json' };
+      const token = window.getEcoSortAuthToken ? window.getEcoSortAuthToken() : localStorage.getItem('ecosortToken');
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`${getApiBaseUrl()}/api/classify`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers,
         body: JSON.stringify({
           image: currentImageSrc,
           sampleHint: currentSampleKey || 'plastic_bottle'
@@ -1362,12 +1726,20 @@ function showToast(message) {
    ========================================================================== */
 function initWasteJourneyAndEcoWallet() {
   // Reusable Data Structures
+  const initialUser = window.getEcoSortUser ? window.getEcoSortUser() : null;
   const userState = {
-    ecoPoints: 250,
-    streakDays: 5,
-    completedJourneys: 18,
+    ecoPoints: initialUser && initialUser.ecoPoints !== undefined ? initialUser.ecoPoints : 0,
+    streakDays: initialUser && initialUser.currentStreak !== undefined ? initialUser.currentStreak : 1,
+    completedJourneys: 0,
     activeBadge: 'Responsible Collector',
     targetRewardGoal: 500
+  };
+
+  window.syncEcoPointsFromAuth = function(pts) {
+    userState.ecoPoints = pts;
+    if (typeof updatePointsDisplay === 'function') {
+      updatePointsDisplay();
+    }
   };
 
   const DESTINATIONS = {
@@ -1638,6 +2010,7 @@ function initWasteJourneyAndEcoWallet() {
         if (activeJourney.stage === 7 && !activeJourney.isVerified) {
           activeJourney.isVerified = true;
           userState.ecoPoints += 50;
+          if (window.updateEcoSortUser) window.updateEcoSortUser({ ecoPoints: userState.ecoPoints });
           userState.completedJourneys += 1;
           const journeyCountEl = document.getElementById('userJourneysCount');
           if (journeyCountEl) journeyCountEl.textContent = userState.completedJourneys;
@@ -1790,6 +2163,7 @@ function initWasteJourneyAndEcoWallet() {
   function handleRedemption(reward) {
     if (userState.ecoPoints >= reward.pts) {
       userState.ecoPoints -= reward.pts;
+      if (window.updateEcoSortUser) window.updateEcoSortUser({ ecoPoints: userState.ecoPoints });
       updatePointsDisplay();
 
       // Add to transaction history
@@ -1914,6 +2288,7 @@ function initWasteJourneyAndEcoWallet() {
   if (confirmDonationBtn) {
     confirmDonationBtn.addEventListener('click', () => {
       userState.ecoPoints += 50;
+      if (window.updateEcoSortUser) window.updateEcoSortUser({ ecoPoints: userState.ecoPoints });
       updatePointsDisplay();
 
       transactions.unshift({

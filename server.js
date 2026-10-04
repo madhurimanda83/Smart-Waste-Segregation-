@@ -5,6 +5,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 
+import apiRouter from './backend/routes/index.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -17,6 +19,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
+// Mount Modular EcoSort API Routes
+app.use('/api', apiRouter);
 
 // Serve static frontend files from project root
 app.use(express.static(__dirname));
@@ -101,7 +106,7 @@ async function resolveImageBase64(imageInput, defaultMime = 'image/jpeg') {
  * Call Google Gemini Flash API with an image
  */
 async function callGeminiFlash(base64Data, mimeType, apiKey) {
-  const models = ['gemini-2.5-flash', 'gemini-1.5-flash'];
+  const models = ['gemini-3.8-flash', 'gemini-3.5-flash', 'gemini-flash-latest', 'gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-1.5-flash'];
   let lastError = null;
 
   const prompt = `You are EcoSort AI, a specialized municipal computer vision system for waste segregation and recycling.
@@ -384,8 +389,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => {
+// Start Server with configurable port and graceful EADDRINUSE handling
+const server = app.listen(PORT, () => {
   console.log('================================================================');
   console.log(` EcoSort Backend Server running on http://localhost:${PORT}`);
   console.log(` Model: Google Gemini 2.5 Flash / 1.5 Flash`);
@@ -393,7 +398,24 @@ app.listen(PORT, () => {
   if (apiKeySet) {
     console.log(` Gemini API Key: [CONFIGURED] Live AI analysis active.`);
   } else {
-    console.log(` Gemini API Key: [NOT CONFIGURED] Add your key to .env when ready.`);
+    console.log(` Gemini API Key: [NOT CONFIGURED] Using labeled demo classification.`);
   }
   console.log('================================================================');
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`\n================================================================`);
+    console.error(` [EcoSort Server] Port ${PORT} is currently in use by another process.`);
+    console.error(` To run EcoSort on a different port, set the PORT environment variable:`);
+    console.error(`   - Windows PowerShell:  $env:PORT=3001; npm run dev`);
+    console.error(`   - Windows CMD:         set PORT=3001 && npm run dev`);
+    console.error(`   - Linux / macOS bash:  PORT=3001 npm run dev`);
+    console.error(`   - Or add PORT=3001 to your .env file.`);
+    console.error(`================================================================\n`);
+    process.exit(1);
+  } else {
+    console.error('[EcoSort Server] Startup error:', err);
+    process.exit(1);
+  }
 });

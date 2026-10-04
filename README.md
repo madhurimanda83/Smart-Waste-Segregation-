@@ -1,51 +1,171 @@
-# EcoSort — Smart Waste Segregation & Recycling Experience
+# EcoSort — Smart Waste Segregation & Circular Recycling Experience
 
-An AI-powered municipal waste segregation and recycling web application powered by **Google Gemini 2.5 Flash** multi-modal vision.
+EcoSort is a hackathon MVP designed to guide users from initial waste identification to verified circular recycling and rewards.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🔄 Core User Journey
+
+```
+Register / Login
+       ↓
+Scan / Identify Waste Item
+       ↓
+Get Preparation & Disposal Guidance
+       ↓
+Request Doorstep Collection / Curbside Pickup
+       ↓
+Track Waste Journey Stages (Collection → Sorting → Recycling)
+       ↓
+Facility Outcome Verification
+       ↓
+Earn Verified EcoPoints
+       ↓
+Redeem Rewards Vouchers
+       ↓
+Monitor Environmental Activity on Personal Dashboard
+```
+
+---
+
+## 🚀 Getting Started
 
 ### 1. Install Dependencies
 ```bash
 npm install
 ```
 
-### 2. Configure Your Google Gemini API Key
-1. Get a free API key from [Google AI Studio](https://aistudio.google.com/app/apikey).
-2. Open the `.env` file in the root directory.
-3. Paste your Gemini API key:
+### 2. Environment Variables (`.env`)
+Create or edit the `.env` file in the project root:
 ```env
-GEMINI_API_KEY=AIzaSy...your_actual_gemini_api_key_here
+# Server Port (Default is 3000)
 PORT=3000
-```
-*(Note: If you run the app without an API key, the system automatically uses demo fallback data so you can test and present without errors).*
 
-### 3. Start the Server
+# Google Gemini Flash API Key (Optional)
+# If omitted or left as default, EcoSort automatically uses clearly labeled demo classification logic.
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# JWT Signing Secret (Defaults to secure fallback in dev)
+JWT_SECRET=ecosort_super_secret_jwt_key_2026
+```
+
+---
+
+## 🏃 Running the Application
+
+### Default Port (3000)
 ```bash
+# Standard production mode
 npm start
+
+# Development mode with hot auto-reload
+npm run dev
 ```
-Open your browser and navigate to:
-```
-http://localhost:3000
-```
+Open your browser at: **`http://localhost:3000`**
+
+### Running on a Different Port (if Port 3000 is Occupied)
+The server port is configurable via `process.env.PORT` with 3000 as default. If port 3000 is already in use by another process on your machine, you can run EcoSort on another port (such as 3001 or 8080) without interfering with the existing process:
+
+- **Windows PowerShell:**
+  ```powershell
+  $env:PORT=3001; npm run dev
+  ```
+- **Windows Command Prompt (cmd):**
+  ```cmd
+  set PORT=3001 && npm run dev
+  ```
+- **macOS / Linux / bash:**
+  ```bash
+  PORT=3001 npm run dev
+  ```
+- **Via `.env` file:**
+  Simply change `PORT=3001` in your `.env` file and execute `npm run dev`.
 
 ---
 
-## 🧠 How the AI Classification Works
+## 🗄️ Database Architecture & Initialization
 
-1. **Upload or Capture**: The user uploads an image (drag & drop, file browse, preset chips, or webcam snap).
-2. **Click "Run AI Classification"**: The frontend sends the image to `POST /api/classify`.
-3. **Backend Processing**:
-   - The Express backend resolves the image (Base64 Data URL, local file, or remote URL).
-   - If `GEMINI_API_KEY` is present in `.env`, the backend calls `gemini-2.5-flash` (with automatic fallback to `gemini-1.5-flash`) using Google's Generative Language REST API.
-   - The AI identifies the item, material composition, bin classification, prep instructions, and carbon impact metrics in structured JSON.
-   - If `GEMINI_API_KEY` is not yet configured, the server provides demo segregation data so the application is always demo-ready.
-4. **Rich Results Display**: The frontend displays the bin color, category badge, prep steps, decomposition time, and CO₂ savings metrics.
+EcoSort utilizes a lightweight, zero-dependency, file-persisted relational store located at:
+`data/ecosort.db.json`
+
+### Key Features
+- **Automatic Initialization**: On first server startup, the database automatically boots and seeds default waste categories, recovery facilities, collection vehicles, gamification badges, and municipal collection schedules.
+- **Relational Integrity**: Foreign keys link `Users` → `WasteScans` → `WasteJourneys` → `CollectionRequests` → `Facilities` → `Verifications` → `EcoPointTransactions` → `Badges` → `RewardRedemptions`.
+- **Anti-Fraud Security**:
+  - Passwords hashed with `bcryptjs` (hashes are never returned in responses).
+  - Authenticated identity (`req.user`) extracted directly from verified JWTs (never trusts user-supplied `userId`).
+  - User resource ownership checks enforced on all journey updates and profile endpoints.
+  - Duplicate EcoPoints prevention: each journey action can only be awarded once.
+  - Negative balance prevention: reward redemptions strictly validate current points before deduction.
 
 ---
 
-## 🛠️ Tech Stack
-- **Frontend**: Vanilla HTML5, Modern CSS Design System, JavaScript (ES6+), Lucide Icons
-- **Backend**: Node.js, Express.js, native `fetch`
-- **AI Model**: Google Gemini 2.5 Flash (`gemini-2.5-flash`) / Gemini 1.5 Flash (`gemini-1.5-flash`)
+## 📡 API Endpoints Reference
+
+All API endpoints are mounted under `/api/*`:
+
+| Domain | Method | Endpoint | Auth | Description |
+| :--- | :--- | :--- | :---: | :--- |
+| **Status** | `GET` | `/api/status` | No | Server health and Gemini AI status |
+| **Auth** | `POST` | `/api/auth/register` | No | Register new user account |
+| **Auth** | `POST` | `/api/auth/login` | No | Login and receive Bearer JWT |
+| **Auth** | `POST` | `/api/auth/logout` | No | Log out session |
+| **Auth** | `GET` | `/api/auth/me` | **Yes** | Verify authenticated identity |
+| **Profile** | `GET` | `/api/users/me` | **Yes** | Get user profile & stats |
+| **Profile** | `PUT` | `/api/users/me` | **Yes** | Update personal profile details |
+| **Waste Scans** | `POST` | `/api/waste/analyze` | Optional | Analyze discarded item & get guidance |
+| **Waste Scans** | `GET` | `/api/waste/history` | **Yes** | User scan history |
+| **Categories** | `GET` | `/api/categories` | No | List waste categories & guidance |
+| **Categories** | `GET` | `/api/categories/:category`| No | Guidelines for specific stream |
+| **Journeys** | `POST` | `/api/journeys` | **Yes** | Start waste tracking journey |
+| **Journeys** | `GET` | `/api/journeys` | **Yes** | User's active & past journeys |
+| **Journeys** | `GET` | `/api/journeys/:id` | **Yes** | Full journey details with status history |
+| **Journeys** | `PUT` | `/api/journeys/:id/status`| **Yes** | Advance journey stage with notes |
+| **Journeys** | `GET` | `/api/journeys/:id/tracking`| **Yes** | Route stages & vehicle telematics |
+| **Journeys** | `POST` | `/api/journeys/:id/verify`| **Yes** | Facility verification & award +50 pts |
+| **Collections** | `POST` | `/api/collections/request`| **Yes** | Request doorstep curbside collection |
+| **Vehicles** | `GET` | `/api/vehicles` | No | List collection fleet |
+| **Facilities** | `GET` | `/api/facilities` | No | List recovery & recycling facilities |
+| **EcoPoints** | `GET` | `/api/points/balance` | **Yes** | Wallet balance & recent transactions |
+| **EcoPoints** | `GET` | `/api/points/history` | **Yes** | Full audit transaction ledger |
+| **EcoPoints** | `GET` | `/api/points/rules` | No | Point matrix rules |
+| **Badges** | `GET` | `/api/badges` | **Yes** | Activity badges earned & locked |
+| **Rewards** | `GET` | `/api/rewards` | No/Yes | Catalog of vouchers |
+| **Rewards** | `POST` | `/api/rewards/:id/redeem`| **Yes** | Redeem reward voucher |
+| **Rewards** | `GET` | `/api/rewards/history` | **Yes** | User redemption claim codes |
+| **Dashboard** | `GET` | `/api/dashboard` | **Yes** | Aggregated dashboard in 1 request |
+| **Schedules** | `GET` | `/api/schedules` | No | Municipal collection timetables |
+| **Notifications**| `GET` | `/api/notifications` | **Yes** | User milestone notifications |
+| **Notifications**| `PUT` | `/api/notifications/:id/read`| **Yes**| Mark notification as read |
+
+*(For full JSON schemas, payloads, and error codes, refer to [`API_DOCUMENTATION.md`](API_DOCUMENTATION.md)).*
+
+---
+
+## 🧪 Running the Verification Test Suite
+
+A comprehensive automated test suite is included to verify all 19 backend requirements:
+```bash
+node backend/test_api_suite.js
+```
+The test suite validates:
+1. Registration with password hashing & login token issuance
+2. Authenticated user profile retrieval & update
+3. Multi-stream waste categories (`RECYCLABLE`, `ORGANIC`, `HAZARDOUS`, `E_WASTE`, `GENERAL`, `REUSABLE`)
+4. Waste analysis returning item name, bin recommendation, and preparation steps
+5. **EcoPoints withholding**: Points are **not** awarded prematurely upon image scan
+6. Creation of waste journeys and collection requests
+7. Step-by-step journey stage progression and status history logging
+8. Destination facility verification and awarding of +50 EcoPoints
+9. **Anti-duplicate rewards check**: Verifying the same journey twice awards 0 additional points
+10. **Negative balance check**: Attempting to redeem rewards without sufficient points returns `400 Bad Request`
+11. Single-call aggregated user dashboard
+
+---
+
+## ⚠️ Prototype & Demo Notice
+
+For hackathon presentation purposes:
+- **AI Classification**: If `GEMINI_API_KEY` is provided, live Google Gemini Flash computer vision is active. If absent, clearly labeled rule-based demo classification is used.
+- **GPS Tracking**: Vehicle telematics, route coordinates, and ETA feeds are simulated prototype data ready for production municipal IoT sensors.
+- **Municipal Schedules & Facilities**: Timetables and facility profiles are demo municipal models designed to demonstrate open-data integration.

@@ -56,44 +56,86 @@
         <a href="#waste-journey" class="nav-link">Waste Journey</a>
         <a href="#categories" class="nav-link">Categories</a>
         <a href="#schedule" class="nav-link">Schedule</a>
-        <a href="#guide" class="nav-link">Waste Guide</a>
       </nav>
 
       <!-- Nav Action -->
       <div class="nav-actions">
-        <!-- EcoWallet Quick Pill -->
-        <a href="#waste-journey" class="nav-wallet-pill" id="navWalletPill" title="Open EcoWallet & Points">
-          <span class="wallet-icon">🌱</span>
-          <span class="wallet-pts" id="navEcoPoints">250</span>
-          <span class="wallet-label">pts</span>
+        <a href="#scanner" class="btn btn-secondary btn-sm nav-scan-btn">
+          <i data-lucide="scan-line" class="btn-icon"></i>
+          <span>Scan Waste</span>
         </a>
 
-        <!-- Notification Bell & Dropdown -->
-        <div class="nav-notif-wrapper">
-          <button type="button" class="nav-notif-btn" id="notifBellBtn" aria-label="Journey Notifications" aria-expanded="false">
-            <i data-lucide="bell"></i>
-            <span class="notif-badge-dot" id="notifBadgeDot"></span>
+        <!-- Guest Nav Actions: Log in arranged to the right (Sign up removed) -->
+        <div class="auth-guest-nav" id="authGuestNav">
+          <button type="button" class="btn btn-primary btn-sm auth-open-btn" data-auth-mode="login">Log in</button>
+        </div>
+
+        <!-- Authenticated User Menu (Visible ONLY after login) -->
+        <div class="auth-user-nav" id="authUserNav" style="display: none;">
+          <!-- Notification Bell & Dropdown (Protected - only shows for logged in users) -->
+          <div class="nav-notif-wrapper" id="navNotifWrapper">
+            <button type="button" class="nav-notif-btn" id="notifBellBtn" aria-label="Journey Notifications" aria-expanded="false">
+              <i data-lucide="bell"></i>
+              <span class="notif-badge-dot" id="notifBadgeDot"></span>
+            </button>
+
+            <!-- Notification Dropdown Panel -->
+            <div class="notif-dropdown" id="notifDropdown" style="display: none;">
+              <div class="notif-header">
+                <span class="notif-title">Journey Updates</span>
+                <span class="notif-count-tag" id="notifCountTag">3 New</span>
+              </div>
+              <div class="notif-list" id="notifList">
+                <!-- Dynamically populated or default items -->
+              </div>
+              <div class="notif-footer">
+                <a href="#waste-journey" class="notif-view-all">View Waste Journey &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="user-menu-btn" id="userMenuBtn" aria-expanded="false" aria-haspopup="true">
+            <span class="user-avatar" id="navUserAvatar">U</span>
+            <span class="user-display-name" id="navUserName">User</span>
+            <i data-lucide="chevron-down" class="user-caret"></i>
           </button>
 
-          <!-- Notification Dropdown Panel -->
-          <div class="notif-dropdown" id="notifDropdown" style="display: none;">
-            <div class="notif-header">
-              <span class="notif-title">Journey Updates</span>
-              <span class="notif-count-tag" id="notifCountTag">3 New</span>
+          <!-- User Dropdown Panel -->
+          <div class="user-dropdown-panel" id="userDropdown" style="display: none;">
+            <div class="user-dropdown-header">
+              <div class="user-dropdown-avatar" id="dropUserAvatar">U</div>
+              <div class="user-dropdown-meta">
+                <span class="user-dropdown-name" id="dropUserName">User</span>
+                <span class="user-dropdown-email" id="dropUserEmail">user@example.com</span>
+                <span class="user-status-tag"><i data-lucide="shield-check"></i> EcoSort Member</span>
+              </div>
             </div>
-            <div class="notif-list" id="notifList">
-              <!-- Dynamically populated or default items -->
+            <div class="user-dropdown-stats">
+              <div class="user-stat-mini">
+                <span class="stat-mini-label">EcoPoints</span>
+                <span class="stat-mini-val" id="dropUserPoints">0 pts</span>
+              </div>
+              <div class="user-stat-mini">
+                <span class="stat-mini-label">Streak</span>
+                <span class="stat-mini-val" id="dropUserStreak">1 Day</span>
+              </div>
             </div>
-            <div class="notif-footer">
-              <a href="#waste-journey" class="notif-view-all">View Waste Journey &rarr;</a>
+            <div class="user-dropdown-links">
+              <a href="#waste-journey" class="user-drop-link" id="dropLinkJourney">
+                <i data-lucide="milestone"></i> <span>Waste Journey & Wallet</span>
+              </a>
+              <a href="#scanner" class="user-drop-link" id="dropLinkScanner">
+                <i data-lucide="scan"></i> <span>Scan Waste Item</span>
+              </a>
+            </div>
+            <div class="user-dropdown-footer">
+              <button type="button" class="user-logout-btn" id="logoutBtn">
+                <i data-lucide="log-out"></i> <span>Sign Out</span>
+              </button>
             </div>
           </div>
         </div>
 
-        <a href="#scanner" class="btn btn-primary btn-sm nav-scan-btn">
-          <i data-lucide="scan-line" class="btn-icon"></i>
-          <span>Scan Waste</span>
-        </a>
         <button class="hamburger-btn" id="mobileMenuBtn" aria-label="Toggle mobile menu" aria-expanded="false">
           <span class="hamburger-bar"></span>
           <span class="hamburger-bar"></span>
@@ -111,7 +153,6 @@
           <a href="#waste-journey" class="mobile-link">Waste Journey & EcoPoints</a>
           <a href="#categories" class="mobile-link">Categories</a>
           <a href="#schedule" class="mobile-link">Schedule</a>
-          <a href="#guide" class="mobile-link">Waste Guide</a>
         </nav>
         <div class="mobile-drawer-cta">
           <a href="#scanner" class="btn btn-primary btn-block">
@@ -119,9 +160,80 @@
             <span>Start Waste Scan</span>
           </a>
         </div>
+
+        <!-- Mobile Drawer Auth Actions (Sign up removed, Log in kept) -->
+        <div class="mobile-auth-wrapper" id="mobileAuthWrapper">
+          <div class="mobile-guest-nav" id="mobileGuestNav">
+            <button type="button" class="btn btn-primary btn-block auth-open-btn" data-auth-mode="login">Log in</button>
+          </div>
+          <div class="mobile-user-card" id="mobileUserCard" style="display: none;">
+            <div class="mobile-user-header">
+              <span class="user-avatar" id="mobileUserAvatar">U</span>
+              <div class="mobile-user-meta">
+                <strong id="mobileUserName">User</strong>
+                <span class="mobile-user-email" id="mobileUserEmail">user@example.com</span>
+              </div>
+            </div>
+            <div class="mobile-user-stats-bar">
+              <span class="mobile-user-pts">🌱 <strong id="mobileUserPoints">0</strong> pts</span>
+              <span class="mobile-user-streak">🔥 <strong id="mobileUserStreak">1</strong> day streak</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm btn-block mobile-logout-btn" id="mobileLogoutBtn">
+              <i data-lucide="log-out"></i> <span>Sign Out</span>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
+
+  <!-- Account access -->
+  <div class="auth-overlay" id="authOverlay" hidden>
+    <section class="auth-dialog" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <button type="button" class="auth-close" id="authClose" aria-label="Close sign in dialog">&times;</button>
+      <div class="auth-story">
+        <a href="#hero" class="brand-logo auth-brand" aria-label="EcoSort Home">
+          <span class="auth-brand-mark"><i data-lucide="recycle"></i></span>
+          <span class="logo-title">Eco<span>Sort</span></span>
+        </a>
+        <span class="badge-pill"><span class="badge-dot"></span> SMALL ACTIONS. BIGGER IMPACT.</span>
+        <h2>Make every item<br><span class="highlight-text">count.</span></h2>
+        <p>Sort smarter, track your impact, and keep valuable materials in circulation.</p>
+        <div class="auth-impact"><i data-lucide="leaf"></i><span>One thoughtful choice at a time.</span></div>
+      </div>
+      <div class="auth-form-panel">
+        <span class="auth-eyebrow">YOUR CIRCULAR JOURNEY STARTS HERE</span>
+        <h2 id="authTitle">Welcome back</h2>
+        <p class="auth-subtitle" id="authSubtitle">Sign in to continue making a difference.</p>
+        <form id="authForm" novalidate>
+          <div class="auth-field" id="authNameField" hidden>
+            <label for="authName">Full name</label>
+            <input id="authName" name="fullName" type="text" autocomplete="name" placeholder="e.g. Alex Green">
+          </div>
+          <div class="auth-field">
+            <label for="authEmail">Email address</label>
+            <input id="authEmail" name="email" type="email" autocomplete="email" placeholder="you@gmail.com" required>
+          </div>
+          <div class="auth-field">
+            <div class="auth-label-row">
+              <label for="authPassword">Password</label>
+              <span id="authPasswordHint">At least 6 characters</span>
+            </div>
+            <div class="auth-pw-wrapper">
+              <input id="authPassword" name="password" type="password" autocomplete="current-password" minlength="6" placeholder="Enter your password" required>
+              <button type="button" class="auth-pw-toggle" id="authTogglePw" aria-label="Toggle password visibility" title="Show/Hide password">
+                <i data-lucide="eye" id="authTogglePwIcon"></i>
+              </button>
+            </div>
+          </div>
+          <p class="auth-error" id="authError" role="alert" hidden></p>
+          <button class="btn btn-primary btn-block auth-submit" id="authSubmit" type="submit">Log in <i data-lucide="arrow-right"></i></button>
+        </form>
+        <p class="auth-switch-line"><span id="authSwitchPrompt">New to EcoSort?</span> <button type="button" id="authSwitch">Create an account</button></p>
+        <p class="auth-terms">By continuing, you agree to help build a cleaner, more circular future.</p>
+      </div>
+    </section>
+  </div>
 
   <!-- ================= MAIN CONTENT ================= -->
   <main id="mainContent">
@@ -130,6 +242,18 @@
     <section class="hero-section" id="hero">
       <div class="hero-glow-blob hero-glow-1"></div>
       <div class="hero-glow-blob hero-glow-2"></div>
+
+      <!-- Hero Top-Right Points Pill -->
+      <div class="container hero-top-bar">
+        <a href="#waste-journey" class="hero-points-pill" id="navWalletPill" title="Open EcoWallet & Points">
+          <span class="hero-points-icon">🌱</span>
+          <div class="hero-points-info">
+            <span class="hero-points-title">EcoPoints Balance</span>
+            <span class="hero-points-val"><strong id="navEcoPoints">0</strong> <small>pts</small></span>
+          </div>
+          <i data-lucide="chevron-right" class="hero-points-arrow"></i>
+        </a>
+      </div>
 
       <div class="container hero-container">
         <!-- Hero Left Column -->
